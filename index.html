@@ -1,4 +1,4 @@
-<!doctype html>
+(<!doctype html>
 <html lang="de">
 <head>
   <meta charset="utf-8" />
@@ -8,6 +8,7 @@
     :root{
       --bg:#0b1020; --card:#111a33; --muted:#97a3c6; --text:#eaf0ff;
       --accent:#6ae4ff; --accent2:#a78bfa; --danger:#ff6a6a; --ok:#6aff9b;
+      --warn:#ffd26a;
       --border:rgba(255,255,255,.10);
     }
     *{box-sizing:border-box}
@@ -18,16 +19,12 @@
                   var(--bg);
       color:var(--text);
     }
-    header{
-      padding:28px 18px 10px; max-width:1100px; margin:0 auto;
-    }
+    header{ padding:28px 18px 10px; max-width:1100px; margin:0 auto; }
     header h1{margin:0 0 6px; font-size:22px; letter-spacing:.2px}
     header p{margin:0; color:var(--muted); line-height:1.4}
     main{max-width:1100px; margin:0 auto; padding:14px 18px 40px}
     .grid{display:grid; gap:14px}
-    @media (min-width: 900px){
-      .grid{grid-template-columns: 1.3fr .9fr}
-    }
+    @media (min-width: 900px){ .grid{grid-template-columns: 1.3fr .9fr} }
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid var(--border);
@@ -52,7 +49,7 @@
       color: var(--text);
       outline:none;
     }
-    textarea{min-height:110px; resize:vertical}
+    textarea{min-height:130px; resize:vertical}
     input::placeholder, textarea::placeholder{color: rgba(234,240,255,.45)}
     .hint{font-size:12px; color:var(--muted); margin-top:6px; line-height:1.35}
     .pill{
@@ -116,17 +113,112 @@
     }
     footer{max-width:1100px; margin:0 auto; padding:0 18px 30px; color:var(--muted); font-size:12px}
     .req{color: rgba(255,255,255,.65); font-weight:600}
+    hr{border:none;border-top:1px solid var(--border); margin:14px 0}
+
+    /* Results UI */
+    .resultBox{
+      margin-top:14px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:14px;
+      background: rgba(0,0,0,.18);
+    }
+    .resultBox h3{margin:0 0 8px; font-size:14px}
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 10px}
+    .chip{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      color: rgba(234,240,255,.92);
+    }
+    .chip.ok{border-color: rgba(106,255,155,.35)}
+    .chip.warn{border-color: rgba(255,210,106,.35)}
+    .chip.bad{border-color: rgba(255,106,106,.35)}
+    .list{
+      margin:0; padding-left:18px; color: rgba(234,240,255,.92); line-height:1.45;
+    }
+    .muted{color:var(--muted)}
+    .twoCols{display:grid; gap:12px}
+    @media (min-width: 650px){ .twoCols{grid-template-columns:1fr 1fr} }
+    .scoreRow{
+      display:flex; justify-content:space-between; gap:10px; align-items:baseline;
+      padding:8px 10px; border:1px solid var(--border); border-radius:12px;
+      background: rgba(255,255,255,.04);
+      margin-bottom:8px;
+    }
+    .scoreRow b{font-size:12px}
+    .scoreRow span{font-size:12px; color:var(--muted)}
+    .miniBtn{
+      padding:8px 10px;
+      border-radius:12px;
+      background: rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      font-size:12px;
+      font-weight:600;
+    }
+
+    /* Wear selection (schematic) */
+    .wearHeader{display:flex; align-items:center; justify-content:space-between; gap:10px}
+    .wearGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    @media (min-width: 650px){
+      .wearGrid{ grid-template-columns: 1fr 1fr 1fr; }
+    }
+    .wearCard{
+      text-align:left;
+      padding:10px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      display:flex;
+      gap:10px;
+      align-items:center;
+      min-height:74px;
+    }
+    .wearCard:hover{border-color: rgba(106,228,255,.35)}
+    .wearCard.selected{
+      border-color: rgba(106,255,155,.40);
+      background: rgba(106,255,155,.08);
+    }
+    .wearIcon{
+      width:52px; height:52px;
+      border-radius:12px;
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.10);
+      display:grid;
+      place-items:center;
+      flex: 0 0 52px;
+    }
+    .wearText b{display:block; font-size:12px}
+    .wearText span{display:block; font-size:11px; color:var(--muted); margin-top:2px; line-height:1.2}
+    svg{width:44px; height:44px}
+    .wearHintRow{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
+
+    /* Insert parser UI */
+    .parserBox{
+      margin-top:10px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      border-radius:14px;
+      padding:10px;
+    }
+    .parserBox .muted{font-size:12px}
   </style>
 </head>
 
 <body>
 <header>
   <h1>Tool-Engineering – Werkzeugexperte</h1>
-  <p>Automatische Ursachenanalyse & priorisierte Maßnahmenliste (Pareto). Gib Problem + Prozessdaten ein – optional mit Fotos.</p>
+  <p>Automatische Ursachenanalyse & priorisierte Maßnahmenliste (Pareto). Eingabe: Problem + Prozessdaten + optional Fotos + Verschleißbilder.</p>
 </header>
 
 <main class="grid">
-  <!-- LEFT: Main Form -->
   <section class="card">
     <h2>1) Problem & Kontext</h2>
 
@@ -138,6 +230,104 @@
           <div class="hint">
             Tipp: Schreib Symptome, Standzeit, wann es passiert (Anlauf/Einstechen/Schlichtgang), und was du bereits versucht hast.
           </div>
+
+          <!-- Wear selection -->
+          <div style="margin-top:12px">
+            <div class="wearHeader">
+              <div class="muted">Verschleißbilder (schematisch) – klickt als Tags in den Freitext</div>
+              <button class="miniBtn" type="button" id="clearWear">Auswahl löschen</button>
+            </div>
+
+            <div class="wearGrid" id="wearGrid" aria-label="Verschleißbilder Auswahl">
+              <button type="button" class="wearCard" data-tag="[VB] Flankenverschleiß" data-key="FLANKENVERSCHLEISS">
+                <div class="wearIcon">
+                  <svg viewBox="0 0 120 80" aria-hidden="true">
+                    <rect x="18" y="18" width="84" height="44" rx="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.18)"/>
+                    <path d="M30 52 L92 52" stroke="rgba(255,255,255,.85)" stroke-width="4" stroke-linecap="round"/>
+                    <path d="M30 45 L92 45" stroke="rgba(255,255,255,.35)" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="wearText">
+                  <b>Flanke (VB)</b>
+                  <span>Verschleißmarke an Flanke</span>
+                </div>
+              </button>
+
+              <button type="button" class="wearCard" data-tag="[KOLK] Kolkverschleiß" data-key="KOLKVERSCHLEISS">
+                <div class="wearIcon">
+                  <svg viewBox="0 0 120 80" aria-hidden="true">
+                    <rect x="18" y="18" width="84" height="44" rx="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.18)"/>
+                    <ellipse cx="62" cy="40" rx="20" ry="10" fill="rgba(255,255,255,.20)" />
+                    <ellipse cx="62" cy="40" rx="10" ry="5" fill="rgba(255,255,255,.35)" />
+                  </svg>
+                </div>
+                <div class="wearText">
+                  <b>Kolk</b>
+                  <span>Krater auf Spanfläche</span>
+                </div>
+              </button>
+
+              <button type="button" class="wearCard" data-tag="[BUE] Aufbauschneide" data-key="AUFBAUSCHNEIDE">
+                <div class="wearIcon">
+                  <svg viewBox="0 0 120 80" aria-hidden="true">
+                    <rect x="18" y="18" width="84" height="44" rx="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.18)"/>
+                    <path d="M32 50 L70 32 L92 50" fill="rgba(255,255,255,.22)" stroke="rgba(255,255,255,.55)" stroke-width="2" />
+                    <circle cx="70" cy="32" r="6" fill="rgba(255,255,255,.35)"/>
+                  </svg>
+                </div>
+                <div class="wearText">
+                  <b>Aufbauschneide</b>
+                  <span>Aufschweißungen / Kleben</span>
+                </div>
+              </button>
+
+              <button type="button" class="wearCard" data-tag="[AUSBRUCH] Kantenbruch/Chipping" data-key="KANTENBRUCH">
+                <div class="wearIcon">
+                  <svg viewBox="0 0 120 80" aria-hidden="true">
+                    <rect x="18" y="18" width="84" height="44" rx="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.18)"/>
+                    <path d="M30 56 L92 56" stroke="rgba(255,255,255,.85)" stroke-width="4" stroke-linecap="round"/>
+                    <path d="M60 56 L70 46 L80 56" fill="rgba(255,106,106,.18)" stroke="rgba(255,106,106,.55)" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div class="wearText">
+                  <b>Kantenbruch</b>
+                  <span>Mikroausbrüche/Chipping</span>
+                </div>
+              </button>
+
+              <button type="button" class="wearCard" data-tag="[KERBE] Kerbverschleiß (Notch)" data-key="KERB">
+                <div class="wearIcon">
+                  <svg viewBox="0 0 120 80" aria-hidden="true">
+                    <rect x="18" y="18" width="84" height="44" rx="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.18)"/>
+                    <path d="M30 56 L92 56" stroke="rgba(255,255,255,.85)" stroke-width="4" stroke-linecap="round"/>
+                    <path d="M30 56 L30 38" stroke="rgba(255,210,106,.70)" stroke-width="4" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="wearText">
+                  <b>Kerbverschleiß</b>
+                  <span>An Eintrittslinie/Schulter</span>
+                </div>
+              </button>
+
+              <button type="button" class="wearCard" data-tag="[RATTERN] Vibrationen/Rattern" data-key="RATTERN">
+                <div class="wearIcon">
+                  <svg viewBox="0 0 120 80" aria-hidden="true">
+                    <rect x="18" y="18" width="84" height="44" rx="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.18)"/>
+                    <path d="M28 46 C38 36, 48 56, 58 46 S78 56, 92 44" fill="none" stroke="rgba(255,210,106,.85)" stroke-width="3" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="wearText">
+                  <b>Rattern</b>
+                  <span>Schwingung/Chatter</span>
+                </div>
+              </button>
+            </div>
+
+            <div class="wearHintRow">
+              <span class="pill">🧷 Klick mehrere Bilder — sie werden als <b>[TAGS]</b> in den Text übernommen.</span>
+            </div>
+          </div>
+          <!-- /Wear selection -->
         </div>
 
         <div class="row three">
@@ -173,7 +363,7 @@
         </div>
       </div>
 
-      <hr style="border:none;border-top:1px solid var(--border); margin:14px 0">
+      <hr>
 
       <h2 style="margin-top:0">2) Werkstoff & Maschine</h2>
       <div class="row two">
@@ -207,7 +397,7 @@
         </div>
       </div>
 
-      <hr style="border:none;border-top:1px solid var(--border); margin:14px 0">
+      <hr>
 
       <h2 style="margin-top:0">3) Werkzeug (ISO / Normcode)</h2>
       <div class="row two">
@@ -215,6 +405,12 @@
           <label for="insertCode"><span class="req">Wendeplatte (z. B. CMNG 1504-08-PM05)</span></label>
           <input id="insertCode" name="insertCode" placeholder="CMNG 1504-08-PM05" required />
           <div class="hint">Wenn vorhanden: Hersteller + Sorte/Beschichtung ergänzen.</div>
+
+          <div class="parserBox">
+            <div class="muted"><b>ISO-Parser Vorschau</b> (automatisch):</div>
+            <div class="chips" id="insertParseChips" style="margin-top:8px"></div>
+            <div class="muted" id="insertParseNote"></div>
+          </div>
         </div>
         <div>
           <label for="holderCode">Halter / Werkzeugaufnahme (Normcode)</label>
@@ -233,7 +429,7 @@
         </div>
       </div>
 
-      <hr style="border:none;border-top:1px solid var(--border); margin:14px 0">
+      <hr>
 
       <h2 style="margin-top:0">4) Schnittdaten & Kühlschmierung</h2>
       <div class="row three">
@@ -270,7 +466,7 @@
         </div>
       </div>
 
-      <hr style="border:none;border-top:1px solid var(--border); margin:14px 0">
+      <hr>
 
       <h2 style="margin-top:0">5) Fotos (optional)</h2>
       <div class="row two">
@@ -305,39 +501,67 @@
 
       <div id="formStatus" class="status">Bereit. Bitte Felder ausfüllen und „Analyse starten“ klicken.</div>
       <pre id="payloadPreview" aria-label="Datenvorschau (JSON)"></pre>
+
+      <div id="results" class="resultBox" style="display:none">
+        <h3>Analyse-Ergebnis (Prototyp V2)</h3>
+        <div class="muted" id="resultsMeta"></div>
+
+        <div style="margin-top:10px">
+          <div class="muted" style="margin-bottom:6px">Erkannte Symptome / Problemklassen</div>
+          <div class="chips" id="symptomChips"></div>
+        </div>
+
+        <div class="twoCols">
+          <div>
+            <div class="muted" style="margin:8px 0 6px">Wahrscheinliche Ursachen (Score)</div>
+            <div id="causeList"></div>
+          </div>
+          <div>
+            <div class="muted" style="margin:8px 0 6px">Priorisierte Maßnahmen (Pareto)</div>
+
+            <div class="muted" style="margin:6px 0 4px">🟢 Top (20% → 80% Wirkung)</div>
+            <ul class="list" id="measuresTop"></ul>
+
+            <div class="muted" style="margin:10px 0 4px">🟡 Sekundär</div>
+            <ul class="list" id="measuresSecondary"></ul>
+
+            <div class="muted" style="margin:10px 0 4px">🔵 Randbedingungen / falls es „hakt“</div>
+            <ul class="list" id="measuresEdge"></ul>
+          </div>
+        </div>
+
+        <div class="hint" style="margin-top:10px">
+          Hinweis: V2 nutzt zusätzlich Werkzeugcode-Hinweise (z. B. negative Platte N=0° → höhere Kräfte, mehr Steifigkeitsbedarf).
+        </div>
+      </div>
     </form>
   </section>
 
-  <!-- RIGHT: Guidance / Quick Help -->
   <aside class="card">
-    <h2>Ausgabe-Ziel (später)</h2>
+    <h2>Ausgabe-Ziel</h2>
     <div class="pill">🟢 <b>Pareto Top-Maßnahmen</b> (20% → 80% Wirkung)</div><br><br>
-    <div class="pill">🟡 <b>Sekundäre Maßnahmen</b> (wenn Top nicht reicht)</div><br><br>
+    <div class="pill">🟡 <b>Sekundäre Maßnahmen</b></div><br><br>
     <div class="pill">🔵 <b>Randbedingungen</b> (Maschine/Spannung/Steifigkeit)</div>
 
     <div class="hint" style="margin-top:14px">
-      <b>Best Practice für den Freitext:</b><br>
-      • Verschleißbild: Kolk / Flanke / Aufbauschneide / Ausbruch<br>
-      • Standzeit: „nach 3 min“ / „nach 12 Teilen“<br>
-      • Geräusch: Rattern / Quietschen / Funken<br>
-      • Oberfläche: Riefen / Wellen / Grat<br>
-      • Span: lang / kurz / blau / verstopft<br>
+      <b>Best Practice:</b><br>
+      • Klick Verschleißbilder (Tags) + schreibe Standzeit<br>
+      • Beschreibe Span (lang/kurz/blau) + Oberfläche<br>
+      • Bei Problemen: vc/f/ap + Kühlung + Steifigkeit
     </div>
 
-    <hr style="border:none;border-top:1px solid var(--border); margin:14px 0">
+    <hr>
 
-    <h2>Was wir als Nächstes anbinden</h2>
+    <h2>V2 aktiv</h2>
     <div class="hint">
-      1) Text-Erkennung (Symptome → Verschleißtyp)<br>
-      2) Ursachen-Matrix (Material + Prozess + Daten)<br>
-      3) Maßnahmen-Katalog + Priorisierung<br>
-      4) Optional: Bildhinweise (unterstützend)
+      • ISO-Code-Parser aktiv (Form/Freiwinkel/Toleranz/Typ + Größen-Codes)<br>
+      • Parser beeinflusst Ursachen-Scoring (z. B. negative Platte → höhere Kräfte)
     </div>
   </aside>
 </main>
 
 <footer>
-  Tool-Engineering – Prototyp. Nächster Schritt: Ursachen-Engine + Maßnahmenkatalog (Pareto).
+  Tool-Engineering – Prototyp V2: Verschleißbilder klickbar + ISO-Code-Parser + Pareto-Maßnahmen.
 </footer>
 
 <script>
@@ -351,6 +575,22 @@
   const partPreview = document.getElementById('partPreview');
   const toolPreviewCap = document.getElementById('toolPreviewCap');
   const partPreviewCap = document.getElementById('partPreviewCap');
+
+  const resultsBox = document.getElementById('results');
+  const resultsMeta = document.getElementById('resultsMeta');
+  const symptomChips = document.getElementById('symptomChips');
+  const causeList = document.getElementById('causeList');
+  const measuresTop = document.getElementById('measuresTop');
+  const measuresSecondary = document.getElementById('measuresSecondary');
+  const measuresEdge = document.getElementById('measuresEdge');
+
+  const problemTextEl = document.getElementById('problemText');
+  const wearGrid = document.getElementById('wearGrid');
+  const clearWearBtn = document.getElementById('clearWear');
+
+  const insertCodeEl = document.getElementById('insertCode');
+  const insertParseChips = document.getElementById('insertParseChips');
+  const insertParseNote = document.getElementById('insertParseNote');
 
   function setStatus(type, msg){
     statusBox.classList.remove('ok','err');
@@ -374,16 +614,179 @@
     reader.readAsDataURL(file);
   }
 
-  toolPhoto.addEventListener('change', (e) => {
-    fileToPreview(e.target.files[0], toolPreview, toolPreviewCap);
+  toolPhoto.addEventListener('change', (e) => fileToPreview(e.target.files[0], toolPreview, toolPreviewCap));
+  partPhoto.addEventListener('change', (e) => fileToPreview(e.target.files[0], partPreview, partPreviewCap));
+
+  // -------------------------
+  // Wear tags insertion
+  // -------------------------
+  function normalizeSpaces(s){ return (s || "").replace(/\s+/g, " ").trim(); }
+
+  function ensureTagInText(tag){
+    const tagNorm = tag.trim();
+    const t = problemTextEl.value || "";
+    if(t.includes(tagNorm)) return;
+    let prefix = t.trim().length ? (t.trim().endsWith(".") ? " " : ". ") : "";
+    problemTextEl.value = normalizeSpaces(t + prefix + tagNorm);
+  }
+
+  function removeTagFromText(tag){
+    const tagNorm = tag.trim();
+    let t = problemTextEl.value || "";
+    t = t.replaceAll(tagNorm, "")
+         .replace(/\s+\./g, ".")
+         .replace(/\.\s*\./g, ".")
+         .replace(/\s{2,}/g, " ")
+         .trim();
+    t = t.replace(/^\.\s*/,"");
+    problemTextEl.value = t;
+  }
+
+  wearGrid.addEventListener("click", (e) => {
+    const btn = e.target.closest(".wearCard");
+    if(!btn) return;
+    const tag = btn.getAttribute("data-tag");
+    const selected = btn.classList.toggle("selected");
+    if(selected) ensureTagInText(tag);
+    else removeTagFromText(tag);
   });
-  partPhoto.addEventListener('change', (e) => {
-    fileToPreview(e.target.files[0], partPreview, partPreviewCap);
+
+  clearWearBtn.addEventListener("click", () => {
+    const btns = wearGrid.querySelectorAll(".wearCard.selected");
+    btns.forEach(b => {
+      b.classList.remove("selected");
+      const tag = b.getAttribute("data-tag");
+      removeTagFromText(tag);
+    });
   });
+
+  // -------------------------
+  // ISO Insert Code Parser (V2)
+  // - robust & cautious: zeigt Codes + Deutung, ohne mm-Behauptungen
+  // -------------------------
+  const SHAPE_MAP = {
+    C: "C = Rhombus 80°",
+    D: "D = Rhombus 55°",
+    V: "V = Rhombus 35°",
+    S: "S = Quadrat 90°",
+    T: "T = Dreieck 60°",
+    W: "W = Trigon 80°",
+    R: "R = Rund",
+    P: "P = Pentagon",
+    O: "O = Oktagon"
+  };
+
+  const CLEARANCE_MAP = {
+    N: "N = 0° (negativ)",
+    C: "C = 7°",
+    P: "P = 11°",
+    E: "E = 20°",
+    A: "A = 3°",
+    B: "B = 5°",
+    D: "D = 15°"
+  };
+
+  const TOL_MAP = {
+    M: "M = mittlere Toleranz",
+    G: "G = geschliffen/präzise (typisch)",
+    E: "E = eng",
+    K: "K = grob",
+    U: "U = ungeschliffen (typisch)"
+  };
+
+  const TYPE_MAP = {
+    G: "G = mit Loch/Spanformer (typisch)",
+    M: "M = mit Loch (typisch)",
+    N: "N = ohne Loch (typisch)",
+    T: "T = spezielle Ausführung"
+  };
+
+  function normalizeInsertCode(raw){
+    return (raw || "")
+      .toUpperCase()
+      .replace(/\s+/g, " ")
+      .replace(/–/g, "-")
+      .trim();
+  }
+
+  function parseInsertCode(raw){
+    const code = normalizeInsertCode(raw);
+    // Try to extract leading 4 letters
+    const m = code.match(/^([A-Z]{4})\s*([0-9]{4})?(-?[0-9]{2})?(-?[A-Z0-9]+)?/);
+    if(!m){
+      return { ok:false, code, message:"Kein ISO-Muster erkannt." };
+    }
+
+    const letters = m[1] || "";
+    const size4 = m[2] || "";
+    // radius often after "-" e.g. -08
+    const r2 = (m[3] || "").replace("-","");
+    const tail = (m[4] || "").replace(/^-/, "");
+
+    const shape = letters[0];
+    const clearance = letters[1];
+    const tol = letters[2];
+    const type = letters[3];
+
+    const chips = [];
+    if(shape) chips.push({ text: SHAPE_MAP[shape] || `${shape} = Form (unbek.)`, tone:"ok" });
+    if(clearance) chips.push({ text: CLEARANCE_MAP[clearance] || `${clearance} = Freiwinkel (unbek.)`, tone: clearance==="N" ? "warn" : "ok" });
+    if(tol) chips.push({ text: TOL_MAP[tol] || `${tol} = Toleranz (unbek.)`, tone:"ok" });
+    if(type) chips.push({ text: TYPE_MAP[type] || `${type} = Typ (unbek.)`, tone:"ok" });
+
+    // Size codes (keep as codes, not mm)
+    if(size4){
+      const ic = size4.slice(0,2);
+      const th = size4.slice(2,4);
+      chips.push({ text: `Größe: IC-Code ${ic}`, tone:"ok" });
+      chips.push({ text: `Dicke-Code ${th}`, tone:"ok" });
+    }
+    if(r2){
+      chips.push({ text: `Eckenradius-Code ${r2}`, tone:"ok" });
+    }
+    if(tail){
+      chips.push({ text: `Zusatz: ${tail}`, tone:"ok" });
+    }
+
+    // Derived hints for scoring
+    const derived = {
+      negative: clearance === "N",
+      positive: ["C","P","E","D","B","A"].includes(clearance),
+      shape,
+      clearance,
+      tol,
+      type,
+      size4,
+      radiusCode: r2 || null,
+      tail: tail || null
+    };
+
+    return { ok:true, code, letters, derived, chips, message:"ISO-Code erkannt (Deutung vereinfacht, herstellerneutral)." };
+  }
+
+  function renderInsertParse(){
+    const parsed = parseInsertCode(insertCodeEl.value);
+    insertParseChips.innerHTML = "";
+    if(!parsed.ok){
+      insertParseNote.textContent = parsed.message;
+      return parsed;
+    }
+    for(const c of parsed.chips){
+      const el = document.createElement("div");
+      el.className = "chip " + (c.tone === "warn" ? "warn" : "ok");
+      el.textContent = c.text;
+      insertParseChips.appendChild(el);
+    }
+    insertParseNote.textContent = parsed.message;
+    return parsed;
+  }
+
+  insertCodeEl.addEventListener("input", () => renderInsertParse());
 
   function collectFormData(){
     const fd = new FormData(form);
-    // Dateien sind nicht direkt JSON-bar – wir speichern Metadaten.
+    const insertParsed = renderInsertParse();
+
     const payload = {
       problemText: (fd.get('problemText') || '').toString().trim(),
       processType: fd.get('processType') || '',
@@ -397,6 +800,8 @@
       machineNotes: (fd.get('machineNotes') || '').toString().trim(),
 
       insertCode: (fd.get('insertCode') || '').toString().trim(),
+      insertParsed: insertParsed.ok ? insertParsed.derived : null,
+
       holderCode: (fd.get('holderCode') || '').toString().trim(),
       toolOverhang_mm: fd.get('toolOverhang') ? Number(fd.get('toolOverhang')) : null,
       clamping: (fd.get('clamping') || '').toString().trim(),
@@ -417,7 +822,7 @@
 
       meta: {
         createdAt: new Date().toISOString(),
-        version: "prototype-0.1"
+        version: "prototype-0.4-parser"
       }
     };
     return payload;
@@ -435,55 +840,656 @@
     if(p.cuttingData.f_mm_per_rev_or_tooth === null) missing.push('f');
     if(p.cuttingData.ap_mm === null) missing.push('ap');
     if(!p.cooling) missing.push('Kühlschmierung');
-
     return missing;
   }
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
+  // -------------------------
+  // Symptom-Erkennung
+  // -------------------------
+  const SYMPTOMS = [
+    { key:"KANTENBRUCH", label:"Kantenbruch / Ausbruch", patterns:["[ausbruch]","kantenbruch","ausbruch","bricht","bruch","chipping","ausgebrochen"] },
+    { key:"AUFBAUSCHNEIDE", label:"Aufbauschneide / adhäsiver Verschleiß", patterns:["[bue]","aufbauschneide","aufschweiß","adhäs","klebt","bue"] },
+    { key:"KOLKVERSCHLEISS", label:"Kolkverschleiß (Krater)", patterns:["[kolk]","kolk","krater","crater","kolkverschleiß"] },
+    { key:"FLANKENVERSCHLEISS", label:"Flankenverschleiß", patterns:["[vb]","flanke","flankenverschleiß","verschleißmarke","vb"] },
+    { key:"KERB", label:"Kerbverschleiß (Notch)", patterns:["[kerbe]","kerb","notch","kerbverschleiß","schulter"] },
+    { key:"RATTERN", label:"Rattern / Vibrationen", patterns:["[rattern]","rattern","vibration","schwing","chatter","quietschen","dröhnen"] },
+    { key:"OBERFLAECHE", label:"Schlechte Oberfläche / Riefen", patterns:["oberfläche","rief","wellen","rau","rattermark","schlecht","kratzer"] },
+    { key:"SPANPROBLEM", label:"Spanprobleme / Span staut", patterns:["span","verstopf","staut","spanbruch","langspan","späne"] },
+    { key:"THERMISCH", label:"Thermische Probleme (blau/funken)", patterns:["blau","funken","überhit","therm","glüh"] },
+  ];
 
-    const payload = collectFormData();
-    const missing = validatePayload(payload);
+  function detectSymptoms(text){
+    const t = (text || "").toLowerCase();
+    const hits = [];
+    for(const s of SYMPTOMS){
+      if(s.patterns.some(p => t.includes(p))) hits.push(s);
+    }
+    const seen = new Set();
+    return hits.filter(h => (seen.has(h.key) ? false : (seen.add(h.key), true)));
+  }
 
-    payloadPreview.textContent = JSON.stringify(payload, null, 2);
+  // -------------------------
+  // Ursachen & Maßnahmen (mit Parser-Einfluss)
+  // -------------------------
+  function baseContextScores(payload){
+    const mg = payload.materialGroup;
+    const cooling = payload.cooling;
+    const vc = payload.cuttingData.vc_m_per_min;
+    const f = payload.cuttingData.f_mm_per_rev_or_tooth;
+    const ap = payload.cuttingData.ap_mm;
+    const overhang = payload.toolOverhang_mm ?? 0;
+    const insert = payload.insertParsed || null;
+    return { mg, cooling, vc, f, ap, overhang, insert };
+  }
 
-    if(missing.length){
-      setStatus('err', `Bitte ergänzen: ${missing.join(', ')}.`);
-      return;
+  function addCause(causes, id, title, why, scoreAdd, measures){
+    if(!causes[id]){
+      causes[id] = { id, title, why: new Set(), score: 0, measures: new Set() };
+    }
+    causes[id].score += scoreAdd;
+    if(why) causes[id].why.add(why);
+    (measures || []).forEach(m => causes[id].measures.add(m));
+  }
+  function buildAnalysis(payload){
+  const ctx = baseContextScores(payload);
+  const symptoms = detectSymptoms(payload.problemText);
+  const causes = {};
+
+  const isStainless = ctx.mg === "M";
+  const isSteel = ctx.mg === "P";
+  const isCast = ctx.mg === "K";
+  const isNonFerrous = ctx.mg === "N";
+  const isSuperAlloy = ctx.mg === "S";
+  const isHard = ctx.mg === "H";
+
+  // heuristische Schwellen
+  const lowVc = typeof ctx.vc === "number" && ctx.vc > 0 && ctx.vc < 120;
+  const highVc = typeof ctx.vc === "number" && ctx.vc > 250;
+  const highF = typeof ctx.f === "number" && ctx.f > 0.30;
+  const lowF  = typeof ctx.f === "number" && ctx.f > 0 && ctx.f < 0.08;
+  const bigAp = typeof ctx.ap === "number" && ctx.ap > 3.5;
+  const longOverhang = ctx.overhang >= 60;
+
+  const coolingWeak = ["Trocken","Unbekannt"].includes(ctx.cooling);
+
+  // Parser-Einfluss
+  const negativeInsert = ctx.insert?.negative === true; // z. B. N=0°
+  const positiveInsert = ctx.insert?.positive === true;
+
+  // Wenn negative Platte: mehr Kräfte → Steifigkeit/Last wird wichtiger
+  if(negativeInsert){
+    addCause(
+      causes,
+      "NEG_PLATTE",
+      "Negative Platte (0°): höhere Kräfte → Steifigkeit entscheidend",
+      "ISO-Code deutet auf negative Schneide (0°) hin.",
+      14,
+      [
+        "Steifigkeit priorisieren: Überstand reduzieren, Spannung verbessern",
+        "Bei Rattern/Bruch: Parameter anpassen (ap/f runter) oder positive Geometrie testen"
+      ]
+    );
+  }
+
+  // -------------------------
+  // Symptom-driven rules
+  // -------------------------
+  for(const s of symptoms){
+
+    if(s.key === "AUFBAUSCHNEIDE"){
+      addCause(
+        causes,
+        "VC_ZU_NIEDRIG",
+        "Schnittgeschwindigkeit zu niedrig (adhäsiver Verschleiß)",
+        "Aufbauschneide korreliert oft mit zu niedriger vc.",
+        lowVc ? 35 : 22,
+        [
+          "vc moderat erhöhen (z. B. +15–30%) und beobachten",
+          "Geometrie/Spanbrecher für adhäsiven Verschleiß wählen (schärfer, geeignete Spanleitstufe)",
+          "KSS/Schmierung verbessern (Ziel: gleitende Schneide, weniger Aufschweißungen)"
+        ]
+      );
+
+      if(isStainless){
+        addCause(
+          causes,
+          "GEOMETRIE_SCHARF",
+          "Geometrie zu stumpf / falscher Spanbrecher für Edelstahl",
+          "Edelstahl neigt zu Aufschweißung – schärfere Geometrie hilft.",
+          24,
+          [
+            "Schärfere Geometrie/Spanbrecher (Edelstahl-geeignet) einsetzen",
+            "f leicht erhöhen, falls Span nicht bricht (kontrolliert)"
+          ]
+        );
+      }
+
+      if(ctx.cooling === "Emulsion (Standard)" || ctx.cooling === "Unbekannt"){
+        addCause(
+          causes,
+          "KSS_ZU_WENIG",
+          "Kühlschmierung trifft Schneide nicht optimal",
+          "Aufbauschneide wird schlimmer bei schlechter Schmierung/Strahlführung.",
+          18,
+          [
+            "Kühlstrahl gezielt auf Spanwurzel/Schneide ausrichten",
+            "Bei Bedarf Hochdruckkühlung testen (Spanabfuhr & Temperatur)"
+          ]
+        );
+      }
     }
 
-    // Placeholder: Hier hängt später die Ursachen-Engine / KI-Analyse dran.
-    setStatus('ok', 'Daten erfasst ✅ (Prototyp). Nächster Schritt: Ursachenlogik + Pareto-Maßnahmenliste.');
+    if(s.key === "KANTENBRUCH"){
+      addCause(
+        causes,
+        "ZAEHIGKEIT_PLATTE",
+        "Plattensorte zu spröde / zu hart für Prozess",
+        "Kantenbruch deutet oft auf zu geringe Zähigkeit oder zu harte Sorte hin.",
+        28,
+        [
+          "Zähere Sorte wählen (mehr Zähigkeit, ggf. andere Beschichtung)",
+          "Eckenradius / Schneidkantenpräparation prüfen (Kantenstabilität)"
+        ]
+      );
+
+      // negative Platte verstärkt Last-/Steifigkeitsthemen
+      if(highF || bigAp || negativeInsert){
+        addCause(
+          causes,
+          "MECH_LAST",
+          "Mechanische Last zu hoch (f/ap/Kräfte)",
+          "Hohe Belastung begünstigt Ausbrüche.",
+          (highF || bigAp) ? 26 : 18,
+          [
+            "f reduzieren (z. B. -10–20%) oder ap reduzieren (z. B. -10–25%)",
+            "Schrupp-/Schlichtaufteilung prüfen (2-stufig statt zu viel auf einmal)"
+          ]
+        );
+      }
+
+      if(longOverhang || negativeInsert){
+        addCause(
+          causes,
+          "STEIFIGKEIT",
+          "Zu geringe Steifigkeit (Auskragung/Spannung)",
+          "Schwingungen/Schläge verursachen Mikroausbrüche.",
+          longOverhang ? 26 : 18,
+          [
+            "Überstand reduzieren (so kurz wie möglich)",
+            "Spannung/Abstützung verbessern (Reitstock/Lünette/Spannmittel)"
+          ]
+        );
+      }
+
+      if(isHard){
+        addCause(
+          causes,
+          "HARTBEARBEITUNG",
+          "H-Bearbeitung: falsche Strategie/Sorte",
+          "Bei ISO H sind Stabilität & richtige Schneidstoffwahl entscheidend.",
+          18,
+          [
+            "Für Hartbearbeitung geeignete Sorte/CBN/PCD (falls passend) prüfen",
+            "Kontinuierlicher Schnitt bevorzugen, Eintritt/Unterbrechung vermeiden"
+          ]
+        );
+      }
+    }
+
+    if(s.key === "RATTERN"){
+      addCause(
+        causes,
+        "STEIFIGKEIT",
+        "Zu geringe Steifigkeit (Auskragung/Spannung)",
+        "Rattern ist fast immer Steifigkeit/Dynamik/Parameter.",
+        (negativeInsert ? 38 : 34),
+        [
+          "Überstand reduzieren, steifere Halter/Adapter nutzen",
+          "Spannung verbessern (kurz, kräftig, Abstützung)"
+        ]
+      );
+
+      addCause(
+        causes,
+        "PARAM_CHATTER",
+        "Schnittdaten im instabilen Bereich (Rattern)",
+        "Bestimmte f/vc Kombinationen treffen Resonanzen.",
+        24,
+        [
+          "vc deutlich verändern (z. B. ±20%) statt minimal zu drehen",
+          "f leicht anpassen (raus aus Resonanz), ggf. ap reduzieren"
+        ]
+      );
+
+      if(negativeInsert){
+        addCause(
+          causes,
+          "POS_GEOMETRIE_TEST",
+          "Bei Schwingung: positive Geometrie testen",
+          "Positive Schneide reduziert Kräfte und kann Stabilität verbessern.",
+          14,
+          [
+            "Wenn möglich: positive Geometrie/Platte (z. B. 7°/11°) testen",
+            "Alternativ: Schnitttiefe ap reduzieren und vc variieren"
+          ]
+        );
+      }
+    }
+
+    if(s.key === "KOLKVERSCHLEISS"){
+      addCause(
+        causes,
+        "VC_ZU_HOCH",
+        "Schnittgeschwindigkeit zu hoch (thermischer Kolk)",
+        "Kolk/Crater steigt oft mit Temperatur (vc).",
+        highVc ? 34 : 22,
+        [
+          "vc reduzieren (z. B. -10–25%)",
+          "Thermisch stabilere Sorte/Beschichtung wählen"
+        ]
+      );
+
+      if(isSuperAlloy || isStainless){
+        addCause(
+          causes,
+          "SORTE_THERM",
+          "Thermische Stabilität/Sorte unpassend",
+          "ISO S/M: Wärme in der Schneide – Sorte muss passen.",
+          20,
+          [
+            "Sorte für ISO S/M (warmfest/oxidationsbeständig) einsetzen",
+            "Hochdruckkühlung (Spanabfuhr) prüfen"
+          ]
+        );
+      }
+    }
+
+    if(s.key === "FLANKENVERSCHLEISS"){
+      addCause(
+        causes,
+        "ABRASSIV",
+        "Abrasiver Verschleiß (Material/Skala/Sand/Guss)",
+        "Flankenverschleiß oft abrasiv getrieben.",
+        18,
+        [
+          "Härtere/verschleißfestere Sorte wählen (Abrasion)",
+          "Schnittkante/Radius passend wählen, um Flanke zu entlasten"
+        ]
+      );
+
+      if(isCast){
+        addCause(
+          causes,
+          "GUSS_STAUB",
+          "Guss: abrasive Partikel & unterbrochener Schnitt",
+          "Guss ist abrasiv, Kantenfestigkeit wichtig.",
+          16,
+          [
+            "Guss-geeignete Sorte/Geometrie einsetzen",
+            "Kühlung meist sekundär – Fokus auf Sorte/Geometrie"
+          ]
+        );
+      }
+    }
+
+    if(s.key === "SPANPROBLEM"){
+      addCause(
+        causes,
+        "SPANBRECHER",
+        "Spanbrecher/Geometrie unpassend (Span staut)",
+        "Spanstau führt zu Oberflächen- und Kantenproblemen.",
+        26,
+        [
+          "Spanbrecher an f/ap anpassen (für den Arbeitsbereich)",
+          "f leicht erhöhen (wenn möglich) zur Spanformung",
+          "Kühlstrahl zur Spanabfuhr ausrichten"
+        ]
+      );
+    }
+
+    if(s.key === "OBERFLAECHE"){
+      addCause(
+        causes,
+        "SCHNEIDKANTE",
+        "Schneidkante/Radius/Geometrie passt nicht zur Schlichtanforderung",
+        "Oberfläche hängt stark an Kantenradius + Stabilität.",
+        18,
+        [
+          "Für Schlichten: geeigneten Eckenradius/Geometrie wählen",
+          "Rundlauf/Anlagefläche prüfen (Wendeplatte sitzt sauber?)"
+        ]
+      );
+
+      if(lowF){
+        addCause(
+          causes,
+          "F_ZU_NIEDRIG",
+          "Vorschub zu niedrig (reiben statt schneiden)",
+          "Zu niedriger f kann Reiben/Schmieren erzeugen.",
+          16,
+          [
+            "f moderat erhöhen (kontrolliert), um Schneiden statt Reiben zu erreichen"
+          ]
+        );
+      }
+    }
+
+    if(s.key === "THERMISCH"){
+      addCause(
+        causes,
+        "THERM_LAST",
+        "Temperatur zu hoch (Parameter/Kühlung)",
+        "Blaufärbung/Funken sind starke Temperaturindikatoren.",
+        28,
+        [
+          "vc reduzieren oder Schnittzeit pro Eingriff reduzieren",
+          "Kühlstrategie verbessern (Hochdruck, Strahlführung)"
+        ]
+      );
+    }
+
+    if(s.key === "KERB"){
+      addCause(
+        causes,
+        "KERB_CAUSE",
+        "Kerbverschleiß: Eintrittslinie/Schulter/Skala/Wechselhärte",
+        "Kerben entstehen oft an Materialkante/Unterbrechung/Skala.",
+        26,
+        [
+          "Eintritt/Schulter-Strategie prüfen (kontinuierlicher Schnitt, Anfahrwinkel)",
+          "Sorte/Geometrie mit hoher Kerbverschleißbeständigkeit wählen",
+          "vc/f so anpassen, dass keine „Reibzone“ an Schulter entsteht"
+        ]
+      );
+    }
+  }
+
+  // -------------------------
+  // Context-only rules (auch ohne Treffer im Text)
+  // -------------------------
+  if(payload.processType === "Stechen/Nuten" || payload.operation === "Einstechen/Abstechen"){
+    addCause(
+      causes,
+      "STECHEN_RISIKO",
+      "Stechen/Abstechen: hohe Prozesssensitivität",
+      "Diese Operationen kippen schnell bei Span/KSS/Steifigkeit.",
+      16,
+      [
+        "Kühlung/Spanabfuhr priorisieren (gezielt, ggf. Hochdruck)",
+        "Ein- und Ausfahrstrategie prüfen, Werkzeugausrichtung kontrollieren"
+      ]
+    );
+  }
+
+  if(coolingWeak){
+    addCause(
+      causes,
+      "KSS_ZU_WENIG",
+      "Kühlschmierung unzureichend (trocken/unklar)",
+      "Viele Probleme entspannen sich durch gute KSS-Führung.",
+      12,
+      [
+        "KSS-Strahlführung prüfen und auf Schneide ausrichten",
+        "Bei Problemen: Hochdruck/MQL-Tests je nach Werkstoff"
+      ]
+    );
+  }
+
+  // ISO-Gruppen-Hinweise (leicht gewichtet)
+  if(isStainless){
+    addCause(
+      causes,
+      "ISO_M_HINT",
+      "ISO M (Edelstahl): zäh/aufschweißend – scharfe Geometrie + KSS",
+      "Edelstahl braucht häufig scharfe Schneiden und saubere Spanabfuhr.",
+      8,
+      [
+        "Für ISO M: scharfe Geometrie + geeigneter Spanbrecher verwenden",
+        "Kühlstrahlführung/Spanabfuhr priorisieren"
+      ]
+    );
+  }
+  if(isSuperAlloy){
+    addCause(
+      causes,
+      "ISO_S_HINT",
+      "ISO S: Wärme in der Schneide – thermische Stabilität wichtig",
+      "Superlegierungen bringen Wärme in Schneide → vc konservativ + passende Sorte.",
+      8,
+      [
+        "Thermisch passende Sorte wählen, vc konservativer",
+        "Hochdruckkühlung/Spanabfuhr verbessern"
+      ]
+    );
+  }
+  if(isCast){
+    addCause(
+      causes,
+      "ISO_K_HINT",
+      "ISO K (Guss): abrasiv/unterbrochen – Kantenfestigkeit",
+      "Guss belastet Kante abrasiv und stoßartig.",
+      6,
+      [
+        "Abrasion-feste Sorte/Geometrie wählen",
+        "Kantenfestigkeit priorisieren (Eckenradius, stabile Geometrie)"
+      ]
+    );
+  }
+  if(isNonFerrous){
+    addCause(
+      causes,
+      "ISO_N_HINT",
+      "ISO N: klebt/schmiert – sehr scharfe Schneide, ggf. Schmierung",
+      "NE-Metalle profitieren oft von polierten Spanflächen.",
+      6,
+      [
+        "Sehr scharfe Geometrie, polierte Spanfläche prüfen",
+        "Schmierung (MQL/Öl) je nach Prozess testen"
+      ]
+    );
+  }
+  if(isHard){
+    addCause(
+      causes,
+      "ISO_H_HINT",
+      "ISO H: harte Werkstoffe – Strategie & Schneidstoff entscheidend",
+      "Bei Hartbearbeitung sind Schneidstoff und Stabilität zentral.",
+      8,
+      [
+        "Hartbearbeitungs-Sorte/CBN prüfen (falls passend)",
+        "Unterbrechung/Schläge vermeiden, stabile Bedingungen schaffen"
+      ]
+    );
+  }
+
+  if(positiveInsert){
+    addCause(
+      causes,
+      "POS_HINT",
+      "Positive Geometrie: geringere Kräfte, oft bessere Oberfläche",
+      "ISO-Code deutet auf positiven Freiwinkel hin.",
+      6,
+      [
+        "Bei Lastproblemen: positive Geometrie beibehalten",
+        "Bei Kantenbruch trotz positiv: Sorte/Zähigkeit prüfen"
+      ]
+    );
+  }
+
+  // -------------------------
+  // Build sorted cause list
+  // -------------------------
+  const causeArr = Object.values(causes)
+    .map(c => ({...c, why:Array.from(c.why), measures:Array.from(c.measures)}))
+    .sort((a,b)=>b.score-a.score);
+
+  // -------------------------
+  // Pareto Buckets
+  // -------------------------
+  const totalScore = causeArr.reduce((s,c)=>s+c.score,0) || 1;
+  let cum = 0;
+
+  const topMeasures = [];
+  const secMeasures = [];
+  const edgeMeasures = [];
+  const seen = new Set();
+
+  function pushUnique(arr, m){
+    if(!m) return;
+    const key = m.trim().toLowerCase();
+    if(seen.has(key)) return;
+    seen.add(key);
+    arr.push(m);
+  }
+
+  for(const c of causeArr){
+    const ratio = cum/totalScore;
+    const bucket = ratio < 0.80 ? "TOP" : (ratio < 0.95 ? "SEC" : "EDGE");
+    for(const m of c.measures){
+      if(bucket === "TOP") pushUnique(topMeasures, m);
+      else if(bucket === "SEC") pushUnique(secMeasures, m);
+      else pushUnique(edgeMeasures, m);
+    }
+    cum += c.score;
+  }
+
+  if(topMeasures.length === 0 && causeArr[0]?.measures?.length){
+    causeArr[0].measures.forEach(m => pushUnique(topMeasures, m));
+  }
+
+  return {
+    symptoms,
+    causes: causeArr,
+    measures: { top: topMeasures, secondary: secMeasures, edge: edgeMeasures }
+  };
+}
+
+function renderResults(payload, analysis){
+  resultsBox.style.display = "block";
+
+  const photoInfo = [];
+  if(payload.photos.tool) photoInfo.push("Werkzeugfoto ✅");
+  if(payload.photos.part) photoInfo.push("Bauteilfoto ✅");
+
+  const insertHint =
+    payload.insertParsed?.negative ? "• Platte: negativ (0°) → höhere Kräfte" :
+    payload.insertParsed?.positive ? "• Platte: positiv → geringere Kräfte" : "";
+
+  resultsMeta.textContent =
+    `Material: ISO ${payload.materialGroup} (${payload.materialSpec}) • Prozess: ${payload.processType}/${payload.operation} • vc=${payload.cuttingData.vc_m_per_min} • f=${payload.cuttingData.f_mm_per_rev_or_tooth} • ap=${payload.cuttingData.ap_mm} ` +
+    (insertHint ? insertHint + " " : "") +
+    (photoInfo.length ? `• ${photoInfo.join(" • ")}` : "");
+
+  symptomChips.innerHTML = "";
+  const sym = analysis.symptoms.length
+    ? analysis.symptoms
+    : [{label:"Keine klaren Keywords erkannt (nutze Ursachen-Logik aus Daten).", key:"NONE"}];
+
+  for(const s of sym){
+    const el = document.createElement("div");
+    el.className = "chip " + (s.key === "KANTENBRUCH" ? "bad" : (s.key === "RATTERN" ? "warn" : "ok"));
+    el.textContent = s.label;
+    symptomChips.appendChild(el);
+  }
+
+  causeList.innerHTML = "";
+  if(!analysis.causes.length){
+    causeList.innerHTML = `<div class="muted">Noch keine Ursachen abgeleitet.</div>`;
+  } else {
+    analysis.causes.slice(0, 6).forEach(c => {
+      const row = document.createElement("div");
+      row.className = "scoreRow";
+      const why = c.why.length ? c.why[0] : "";
+      row.innerHTML = `<div><b>${c.title}</b><div class="muted" style="margin-top:2px">${why}</div></div><span>Score: ${c.score}</span>`;
+      causeList.appendChild(row);
+    });
+  }
+
+  function fillList(ul, items){
+    ul.innerHTML = "";
+    if(!items.length){
+      const li = document.createElement("li");
+      li.className = "muted";
+      li.textContent = "—";
+      ul.appendChild(li);
+      return;
+    }
+    items.slice(0, 7).forEach(m => {
+      const li = document.createElement("li");
+      li.textContent = m;
+      ul.appendChild(li);
+    });
+  }
+
+  fillList(measuresTop, analysis.measures.top);
+  fillList(measuresSecondary, analysis.measures.secondary);
+  fillList(measuresEdge, analysis.measures.edge);
+}
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const payload = collectFormData();
+  const missing = validatePayload(payload);
+
+  payloadPreview.textContent = JSON.stringify(payload, null, 2);
+
+  if(missing.length){
+    setStatus('err', `Bitte ergänzen: ${missing.join(', ')}.`);
+    resultsBox.style.display = "none";
+    return;
+  }
+
+  const analysis = buildAnalysis(payload);
+  renderResults(payload, analysis);
+
+  setStatus('ok', 'Analyse erzeugt ✅ (V2: inkl. ISO-Code-Parser).');
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  form.reset();
+  payloadPreview.textContent = '';
+  resultsBox.style.display = "none";
+  setStatus('', 'Bereit. Bitte Felder ausfüllen und „Analyse starten“ klicken.');
+  fileToPreview(null, toolPreview, toolPreviewCap);
+  fileToPreview(null, partPreview, partPreviewCap);
+
+  wearGrid.querySelectorAll(".wearCard.selected").forEach(b => b.classList.remove("selected"));
+  renderInsertParse();
+});
+
+document.getElementById('fillDemo').addEventListener('click', () => {
+  problemTextEl.value =
+    "Kantenbruch nach ca. 3 Minuten im Schruppen. Oberfläche mit Riefen, gelegentlich Rattern. [BUE] Aufbauschneide. Span teils lang, teils verstopft. Kühlung Standard-Emulsion.";
+
+  // Wear cards passend markieren
+  wearGrid.querySelectorAll(".wearCard").forEach(b => {
+    const tag = (b.getAttribute("data-tag") || "").toLowerCase();
+    b.classList.toggle("selected", problemTextEl.value.toLowerCase().includes(tag));
   });
 
-  document.getElementById('resetBtn').addEventListener('click', () => {
-    form.reset();
-    payloadPreview.textContent = '';
-    setStatus('', 'Bereit. Bitte Felder ausfüllen und „Analyse starten“ klicken.');
-    fileToPreview(null, toolPreview, toolPreviewCap);
-    fileToPreview(null, partPreview, partPreviewCap);
-  });
+  document.getElementById('processType').value = "Drehen";
+  document.getElementById('operation').value = "Schruppen";
+  document.getElementById('diameter').value = "62";
+  document.getElementById('materialGroup').value = "M";
+  document.getElementById('materialSpec').value = "1.4301 / X5CrNi18-10";
+  document.getElementById('machineBrand').value = "DMG Mori (Beispiel)";
 
-  document.getElementById('fillDemo').addEventListener('click', () => {
-    document.getElementById('problemText').value =
-      "Kantenbruch nach ca. 3 Minuten im Schruppen. Oberfläche mit Riefen, gelegentlich Rattern. Span teils lang, teils verstopft. Kühlung Standard-Emulsion.";
-    document.getElementById('processType').value = "Drehen";
-    document.getElementById('operation').value = "Schruppen";
-    document.getElementById('diameter').value = "62";
-    document.getElementById('materialGroup').value = "M";
-    document.getElementById('materialSpec').value = "1.4301 / X5CrNi18-10";
-    document.getElementById('machineBrand').value = "DMG Mori (Beispiel)";
-    document.getElementById('insertCode').value = "CMNG 1504-08-PM05";
-    document.getElementById('holderCode').value = "PCLNR 2525M12";
-    document.getElementById('toolOverhang').value = "55";
-    document.getElementById('clamping').value = "Dreibackenfutter + Reitstock";
-    document.getElementById('vc').value = "160";
-    document.getElementById('f').value = "0.22";
-    document.getElementById('ap').value = "2.5";
-    document.getElementById('cooling').value = "Emulsion (Standard)";
-    document.getElementById('coolingNotes').value = "Kühlstrahl trifft Schneide nicht immer sauber.";
-    setStatus('', 'Demo-Daten eingefügt. Jetzt „Analyse starten“.');
-  });
-</script>
-</body>
-</html>
+  document.getElementById('insertCode').value = "CMNG 1504-08-PM05";
+  renderInsertParse();
+
+  document.getElementById('holderCode').value = "PCLNR 2525M12";
+  document.getElementById('toolOverhang').value = "65";
+  document.getElementById('clamping').value = "Dreibackenfutter + Reitstock";
+  document.getElementById('vc').value = "110";
+  document.getElementById('f').value = "0.28";
+  document.getElementById('ap').value = "3.8";
+  document.getElementById('cooling').value = "Emulsion (Standard)";
+  document.getElementById('coolingNotes').value = "Kühlstrahl trifft Schneide nicht immer sauber.";
+
+  setStatus('', 'Demo-Daten eingefügt. Jetzt „Analyse starten“.');
+});
+
+// initial
+renderInsertParse();
+  
