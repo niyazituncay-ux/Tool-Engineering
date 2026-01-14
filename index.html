@@ -1,1 +1,489 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tool-Engineering – Werkzeugexperte (Ursachenanalyse)</title>
+  <style>
+    :root{
+      --bg:#0b1020; --card:#111a33; --muted:#97a3c6; --text:#eaf0ff;
+      --accent:#6ae4ff; --accent2:#a78bfa; --danger:#ff6a6a; --ok:#6aff9b;
+      --border:rgba(255,255,255,.10);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(106,228,255,.18), transparent 60%),
+                  radial-gradient(900px 500px at 85% 10%, rgba(167,139,250,.18), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+    }
+    header{
+      padding:28px 18px 10px; max-width:1100px; margin:0 auto;
+    }
+    header h1{margin:0 0 6px; font-size:22px; letter-spacing:.2px}
+    header p{margin:0; color:var(--muted); line-height:1.4}
+    main{max-width:1100px; margin:0 auto; padding:14px 18px 40px}
+    .grid{display:grid; gap:14px}
+    @media (min-width: 900px){
+      .grid{grid-template-columns: 1.3fr .9fr}
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:16px;
+      box-shadow: 0 10px 28px rgba(0,0,0,.35);
+      backdrop-filter: blur(10px);
+    }
+    .card h2{margin:0 0 10px; font-size:16px}
+    .row{display:grid; gap:10px}
+    @media (min-width: 650px){
+      .row.two{grid-template-columns: 1fr 1fr}
+      .row.three{grid-template-columns: 1fr 1fr 1fr}
+    }
+    label{display:block; font-size:12px; color:var(--muted); margin:4px 0 6px}
+    input, select, textarea{
+      width:100%;
+      padding:10px 11px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+      outline:none;
+    }
+    textarea{min-height:110px; resize:vertical}
+    input::placeholder, textarea::placeholder{color: rgba(234,240,255,.45)}
+    .hint{font-size:12px; color:var(--muted); margin-top:6px; line-height:1.35}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px; border:1px dashed var(--border);
+      border-radius:999px; color:var(--muted); font-size:12px;
+      background: rgba(0,0,0,.18);
+    }
+    .pill b{color:var(--text)}
+    .actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px}
+    button{
+      cursor:pointer;
+      border:1px solid var(--border);
+      padding:11px 13px;
+      border-radius:12px;
+      background: rgba(106,228,255,.12);
+      color: var(--text);
+      font-weight:600;
+    }
+    button.primary{
+      background: linear-gradient(90deg, rgba(106,228,255,.22), rgba(167,139,250,.22));
+      border-color: rgba(106,228,255,.35);
+    }
+    button.ghost{background: rgba(255,255,255,.05)}
+    button:active{transform: translateY(1px)}
+    .previewGrid{
+      display:grid; gap:10px; grid-template-columns:1fr 1fr;
+      margin-top:10px;
+    }
+    .preview{
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.18);
+      border-radius:14px; padding:10px;
+    }
+    .preview img{
+      width:100%; height:170px; object-fit:cover;
+      border-radius:10px; display:block;
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .preview .cap{margin-top:8px; font-size:12px; color:var(--muted)}
+    .status{
+      margin-top:12px; padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.18);
+      color: var(--muted);
+      font-size:12px; line-height:1.4;
+    }
+    .status.ok{border-color: rgba(106,255,155,.35); color: rgba(106,255,155,.95)}
+    .status.err{border-color: rgba(255,106,106,.35); color: rgba(255,106,106,.95)}
+    pre{
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin:12px 0 0;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.25);
+      color: rgba(234,240,255,.9);
+      font-size:12px;
+    }
+    footer{max-width:1100px; margin:0 auto; padding:0 18px 30px; color:var(--muted); font-size:12px}
+    .req{color: rgba(255,255,255,.65); font-weight:600}
+  </style>
+</head>
 
+<body>
+<header>
+  <h1>Tool-Engineering – Werkzeugexperte</h1>
+  <p>Automatische Ursachenanalyse & priorisierte Maßnahmenliste (Pareto). Gib Problem + Prozessdaten ein – optional mit Fotos.</p>
+</header>
+
+<main class="grid">
+  <!-- LEFT: Main Form -->
+  <section class="card">
+    <h2>1) Problem & Kontext</h2>
+
+    <form id="analysisForm" autocomplete="on">
+      <div class="row">
+        <div>
+          <label for="problemText"><span class="req">Problembeschreibung (Freitext)</span></label>
+          <textarea id="problemText" name="problemText" placeholder="z. B. Kantenbruch nach 3 Minuten, Oberfläche schlecht, Aufbauschneide sichtbar, Vibrationen/Rattern..." required></textarea>
+          <div class="hint">
+            Tipp: Schreib Symptome, Standzeit, wann es passiert (Anlauf/Einstechen/Schlichtgang), und was du bereits versucht hast.
+          </div>
+        </div>
+
+        <div class="row three">
+          <div>
+            <label for="processType"><span class="req">Bearbeitungsart</span></label>
+            <select id="processType" name="processType" required>
+              <option value="" selected disabled>Bitte wählen…</option>
+              <option>Drehen</option>
+              <option>Fräsen</option>
+              <option>Bohren</option>
+              <option>Stechen/Nuten</option>
+              <option>Gewinde</option>
+              <option>Sonstiges</option>
+            </select>
+          </div>
+          <div>
+            <label for="operation"><span class="req">Operation</span></label>
+            <select id="operation" name="operation" required>
+              <option value="" selected disabled>Bitte wählen…</option>
+              <option>Schruppen</option>
+              <option>Schlichten</option>
+              <option>Schruppen + Schlichten</option>
+              <option>Einstechen/Abstechen</option>
+              <option>Kontur</option>
+              <option>Planen</option>
+              <option>Sonstiges</option>
+            </select>
+          </div>
+          <div>
+            <label for="diameter">Ø / Breite (mm)</label>
+            <input id="diameter" name="diameter" type="number" step="0.01" min="0" placeholder="z. B. 62" />
+          </div>
+        </div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid var(--border); margin:14px 0">
+
+      <h2 style="margin-top:0">2) Werkstoff & Maschine</h2>
+      <div class="row two">
+        <div>
+          <label for="materialGroup"><span class="req">Werkstoffgruppe</span></label>
+          <select id="materialGroup" name="materialGroup" required>
+            <option value="" selected disabled>Bitte wählen…</option>
+            <option value="P">ISO P – Stahl</option>
+            <option value="M">ISO M – Edelstahl</option>
+            <option value="K">ISO K – Guss</option>
+            <option value="N">ISO N – NE-Metalle (Alu, Cu…)</option>
+            <option value="S">ISO S – Superlegierungen (Inconel, Ti…)</option>
+            <option value="H">ISO H – Gehärtete Werkstoffe</option>
+          </select>
+          <div class="hint">Wenn du es nicht sicher weißt: nimm die wahrscheinlichste Gruppe.</div>
+        </div>
+        <div>
+          <label for="materialSpec"><span class="req">Werkstoffbezeichnung</span></label>
+          <input id="materialSpec" name="materialSpec" placeholder="z. B. 1.4301 / X5CrNi18-10 / C45 / GG25 / Ti6Al4V" required />
+        </div>
+      </div>
+
+      <div class="row two" style="margin-top:10px">
+        <div>
+          <label for="machineBrand">Maschine – Marke/Typ</label>
+          <input id="machineBrand" name="machineBrand" placeholder="z. B. DMG Mori NLX / Mazak / Okuma…" />
+        </div>
+        <div>
+          <label for="machineNotes">Maschinenhinweise</label>
+          <input id="machineNotes" name="machineNotes" placeholder="z. B. Spindel 6000 rpm, angetriebene Werkzeuge, Dynamik-Probleme…" />
+        </div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid var(--border); margin:14px 0">
+
+      <h2 style="margin-top:0">3) Werkzeug (ISO / Normcode)</h2>
+      <div class="row two">
+        <div>
+          <label for="insertCode"><span class="req">Wendeplatte (z. B. CMNG 1504-08-PM05)</span></label>
+          <input id="insertCode" name="insertCode" placeholder="CMNG 1504-08-PM05" required />
+          <div class="hint">Wenn vorhanden: Hersteller + Sorte/Beschichtung ergänzen.</div>
+        </div>
+        <div>
+          <label for="holderCode">Halter / Werkzeugaufnahme (Normcode)</label>
+          <input id="holderCode" name="holderCode" placeholder="z. B. PCLNR 2525M12 / SCLCR…" />
+        </div>
+      </div>
+
+      <div class="row two" style="margin-top:10px">
+        <div>
+          <label for="toolOverhang">Überstand / Auskragung (mm)</label>
+          <input id="toolOverhang" name="toolOverhang" type="number" step="0.1" min="0" placeholder="z. B. 55" />
+        </div>
+        <div>
+          <label for="clamping">Spannung (Bauteil)</label>
+          <input id="clamping" name="clamping" placeholder="z. B. Dreibackenfutter + Reitstock / Spannzange / Aufspannung..." />
+        </div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid var(--border); margin:14px 0">
+
+      <h2 style="margin-top:0">4) Schnittdaten & Kühlschmierung</h2>
+      <div class="row three">
+        <div>
+          <label for="vc"><span class="req">vc (m/min)</span></label>
+          <input id="vc" name="vc" type="number" step="0.1" min="0" placeholder="z. B. 180" required />
+        </div>
+        <div>
+          <label for="f"><span class="req">f (mm/U oder mm/Z)</span></label>
+          <input id="f" name="f" type="number" step="0.001" min="0" placeholder="z. B. 0.18" required />
+        </div>
+        <div>
+          <label for="ap"><span class="req">ap (mm)</span></label>
+          <input id="ap" name="ap" type="number" step="0.01" min="0" placeholder="z. B. 2.0" required />
+        </div>
+      </div>
+
+      <div class="row two" style="margin-top:10px">
+        <div>
+          <label for="cooling"><span class="req">Kühlschmierung</span></label>
+          <select id="cooling" name="cooling" required>
+            <option value="" selected disabled>Bitte wählen…</option>
+            <option>Trocken</option>
+            <option>Emulsion (Standard)</option>
+            <option>Hochdruckkühlung</option>
+            <option>MQL</option>
+            <option>Öl</option>
+            <option>Unbekannt</option>
+          </select>
+        </div>
+        <div>
+          <label for="coolingNotes">Kühlhinweise</label>
+          <input id="coolingNotes" name="coolingNotes" placeholder="z. B. 70 bar, Düse trifft Schneide nicht, Kühlung unterbrochen..." />
+        </div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid var(--border); margin:14px 0">
+
+      <h2 style="margin-top:0">5) Fotos (optional)</h2>
+      <div class="row two">
+        <div>
+          <label for="toolPhoto">Foto: Werkzeug / Schneide</label>
+          <input id="toolPhoto" name="toolPhoto" type="file" accept="image/*" />
+          <div class="hint">Ideal: Nahaufnahme der Schneidkante (scharf, gut beleuchtet).</div>
+        </div>
+        <div>
+          <label for="partPhoto">Foto: Bauteil / Oberfläche / Span</label>
+          <input id="partPhoto" name="partPhoto" type="file" accept="image/*" />
+          <div class="hint">Ideal: Oberfläche + Spanform + Problemstelle.</div>
+        </div>
+      </div>
+
+      <div class="previewGrid" aria-live="polite">
+        <div class="preview">
+          <img id="toolPreview" alt="Vorschau Werkzeugfoto" src="" style="display:none" />
+          <div class="cap" id="toolPreviewCap">Keine Vorschau</div>
+        </div>
+        <div class="preview">
+          <img id="partPreview" alt="Vorschau Bauteilfoto" src="" style="display:none" />
+          <div class="cap" id="partPreviewCap">Keine Vorschau</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" type="submit">Analyse starten</button>
+        <button class="ghost" type="button" id="fillDemo">Demo-Daten füllen</button>
+        <button class="ghost" type="button" id="resetBtn">Zurücksetzen</button>
+      </div>
+
+      <div id="formStatus" class="status">Bereit. Bitte Felder ausfüllen und „Analyse starten“ klicken.</div>
+      <pre id="payloadPreview" aria-label="Datenvorschau (JSON)"></pre>
+    </form>
+  </section>
+
+  <!-- RIGHT: Guidance / Quick Help -->
+  <aside class="card">
+    <h2>Ausgabe-Ziel (später)</h2>
+    <div class="pill">🟢 <b>Pareto Top-Maßnahmen</b> (20% → 80% Wirkung)</div><br><br>
+    <div class="pill">🟡 <b>Sekundäre Maßnahmen</b> (wenn Top nicht reicht)</div><br><br>
+    <div class="pill">🔵 <b>Randbedingungen</b> (Maschine/Spannung/Steifigkeit)</div>
+
+    <div class="hint" style="margin-top:14px">
+      <b>Best Practice für den Freitext:</b><br>
+      • Verschleißbild: Kolk / Flanke / Aufbauschneide / Ausbruch<br>
+      • Standzeit: „nach 3 min“ / „nach 12 Teilen“<br>
+      • Geräusch: Rattern / Quietschen / Funken<br>
+      • Oberfläche: Riefen / Wellen / Grat<br>
+      • Span: lang / kurz / blau / verstopft<br>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border); margin:14px 0">
+
+    <h2>Was wir als Nächstes anbinden</h2>
+    <div class="hint">
+      1) Text-Erkennung (Symptome → Verschleißtyp)<br>
+      2) Ursachen-Matrix (Material + Prozess + Daten)<br>
+      3) Maßnahmen-Katalog + Priorisierung<br>
+      4) Optional: Bildhinweise (unterstützend)
+    </div>
+  </aside>
+</main>
+
+<footer>
+  Tool-Engineering – Prototyp. Nächster Schritt: Ursachen-Engine + Maßnahmenkatalog (Pareto).
+</footer>
+
+<script>
+  const form = document.getElementById('analysisForm');
+  const statusBox = document.getElementById('formStatus');
+  const payloadPreview = document.getElementById('payloadPreview');
+
+  const toolPhoto = document.getElementById('toolPhoto');
+  const partPhoto = document.getElementById('partPhoto');
+  const toolPreview = document.getElementById('toolPreview');
+  const partPreview = document.getElementById('partPreview');
+  const toolPreviewCap = document.getElementById('toolPreviewCap');
+  const partPreviewCap = document.getElementById('partPreviewCap');
+
+  function setStatus(type, msg){
+    statusBox.classList.remove('ok','err');
+    if(type) statusBox.classList.add(type);
+    statusBox.textContent = msg;
+  }
+
+  function fileToPreview(file, imgEl, capEl){
+    if(!file){
+      imgEl.style.display = 'none';
+      imgEl.src = '';
+      capEl.textContent = 'Keine Vorschau';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      imgEl.src = reader.result;
+      imgEl.style.display = 'block';
+      capEl.textContent = `${file.name} (${Math.round(file.size/1024)} KB)`;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  toolPhoto.addEventListener('change', (e) => {
+    fileToPreview(e.target.files[0], toolPreview, toolPreviewCap);
+  });
+  partPhoto.addEventListener('change', (e) => {
+    fileToPreview(e.target.files[0], partPreview, partPreviewCap);
+  });
+
+  function collectFormData(){
+    const fd = new FormData(form);
+    // Dateien sind nicht direkt JSON-bar – wir speichern Metadaten.
+    const payload = {
+      problemText: (fd.get('problemText') || '').toString().trim(),
+      processType: fd.get('processType') || '',
+      operation: fd.get('operation') || '',
+      diameter_mm: fd.get('diameter') ? Number(fd.get('diameter')) : null,
+
+      materialGroup: fd.get('materialGroup') || '',
+      materialSpec: (fd.get('materialSpec') || '').toString().trim(),
+
+      machineBrand: (fd.get('machineBrand') || '').toString().trim(),
+      machineNotes: (fd.get('machineNotes') || '').toString().trim(),
+
+      insertCode: (fd.get('insertCode') || '').toString().trim(),
+      holderCode: (fd.get('holderCode') || '').toString().trim(),
+      toolOverhang_mm: fd.get('toolOverhang') ? Number(fd.get('toolOverhang')) : null,
+      clamping: (fd.get('clamping') || '').toString().trim(),
+
+      cuttingData: {
+        vc_m_per_min: fd.get('vc') ? Number(fd.get('vc')) : null,
+        f_mm_per_rev_or_tooth: fd.get('f') ? Number(fd.get('f')) : null,
+        ap_mm: fd.get('ap') ? Number(fd.get('ap')) : null
+      },
+
+      cooling: fd.get('cooling') || '',
+      coolingNotes: (fd.get('coolingNotes') || '').toString().trim(),
+
+      photos: {
+        tool: toolPhoto.files[0] ? { name: toolPhoto.files[0].name, size_kb: Math.round(toolPhoto.files[0].size/1024), type: toolPhoto.files[0].type } : null,
+        part: partPhoto.files[0] ? { name: partPhoto.files[0].name, size_kb: Math.round(partPhoto.files[0].size/1024), type: partPhoto.files[0].type } : null
+      },
+
+      meta: {
+        createdAt: new Date().toISOString(),
+        version: "prototype-0.1"
+      }
+    };
+    return payload;
+  }
+
+  function validatePayload(p){
+    const missing = [];
+    if(!p.problemText) missing.push('Problembeschreibung');
+    if(!p.processType) missing.push('Bearbeitungsart');
+    if(!p.operation) missing.push('Operation');
+    if(!p.materialGroup) missing.push('Werkstoffgruppe');
+    if(!p.materialSpec) missing.push('Werkstoffbezeichnung');
+    if(!p.insertCode) missing.push('Wendeplatte');
+    if(p.cuttingData.vc_m_per_min === null) missing.push('vc');
+    if(p.cuttingData.f_mm_per_rev_or_tooth === null) missing.push('f');
+    if(p.cuttingData.ap_mm === null) missing.push('ap');
+    if(!p.cooling) missing.push('Kühlschmierung');
+
+    return missing;
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const payload = collectFormData();
+    const missing = validatePayload(payload);
+
+    payloadPreview.textContent = JSON.stringify(payload, null, 2);
+
+    if(missing.length){
+      setStatus('err', `Bitte ergänzen: ${missing.join(', ')}.`);
+      return;
+    }
+
+    // Placeholder: Hier hängt später die Ursachen-Engine / KI-Analyse dran.
+    setStatus('ok', 'Daten erfasst ✅ (Prototyp). Nächster Schritt: Ursachenlogik + Pareto-Maßnahmenliste.');
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    form.reset();
+    payloadPreview.textContent = '';
+    setStatus('', 'Bereit. Bitte Felder ausfüllen und „Analyse starten“ klicken.');
+    fileToPreview(null, toolPreview, toolPreviewCap);
+    fileToPreview(null, partPreview, partPreviewCap);
+  });
+
+  document.getElementById('fillDemo').addEventListener('click', () => {
+    document.getElementById('problemText').value =
+      "Kantenbruch nach ca. 3 Minuten im Schruppen. Oberfläche mit Riefen, gelegentlich Rattern. Span teils lang, teils verstopft. Kühlung Standard-Emulsion.";
+    document.getElementById('processType').value = "Drehen";
+    document.getElementById('operation').value = "Schruppen";
+    document.getElementById('diameter').value = "62";
+    document.getElementById('materialGroup').value = "M";
+    document.getElementById('materialSpec').value = "1.4301 / X5CrNi18-10";
+    document.getElementById('machineBrand').value = "DMG Mori (Beispiel)";
+    document.getElementById('insertCode').value = "CMNG 1504-08-PM05";
+    document.getElementById('holderCode').value = "PCLNR 2525M12";
+    document.getElementById('toolOverhang').value = "55";
+    document.getElementById('clamping').value = "Dreibackenfutter + Reitstock";
+    document.getElementById('vc').value = "160";
+    document.getElementById('f').value = "0.22";
+    document.getElementById('ap').value = "2.5";
+    document.getElementById('cooling').value = "Emulsion (Standard)";
+    document.getElementById('coolingNotes').value = "Kühlstrahl trifft Schneide nicht immer sauber.";
+    setStatus('', 'Demo-Daten eingefügt. Jetzt „Analyse starten“.');
+  });
+</script>
+</body>
+</html>
