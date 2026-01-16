@@ -1,45 +1,73 @@
-(<!doctype html>
+<!doctype html>
 <html lang="de">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tool-Engineering – Werkzeugexperte (Ursachenanalyse)</title>
+  <title>TA Desk – Chart Review (Weekly & Day)</title>
   <style>
     :root{
-      --bg:#0b1020; --card:#111a33; --muted:#97a3c6; --text:#eaf0ff;
-      --accent:#6ae4ff; --accent2:#a78bfa; --danger:#ff6a6a; --ok:#6aff9b;
-      --warn:#ffd26a;
+      --bg:#0b1020;
+      --panel:#111a33;
+      --panel2:#0f1730;
+      --text:#eaf0ff;
+      --muted:#97a3c6;
       --border:rgba(255,255,255,.10);
+      --accent:#6ae4ff;
+      --accent2:#a78bfa;
+      --ok:#6aff9b;
+      --warn:#ffd26a;
+      --bad:#ff6a6a;
+      --shadow: 0 12px 34px rgba(0,0,0,.45);
     }
     *{box-sizing:border-box}
     body{
-      margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
-      background: radial-gradient(1200px 600px at 20% 0%, rgba(106,228,255,.18), transparent 60%),
-                  radial-gradient(900px 500px at 85% 10%, rgba(167,139,250,.18), transparent 60%),
-                  var(--bg);
+      margin:0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
+      background:
+        radial-gradient(1200px 600px at 18% 0%, rgba(106,228,255,.18), transparent 60%),
+        radial-gradient(900px 520px at 85% 10%, rgba(167,139,250,.18), transparent 60%),
+        var(--bg);
       color:var(--text);
     }
-    header{ padding:28px 18px 10px; max-width:1100px; margin:0 auto; }
-    header h1{margin:0 0 6px; font-size:22px; letter-spacing:.2px}
-    header p{margin:0; color:var(--muted); line-height:1.4}
-    main{max-width:1100px; margin:0 auto; padding:14px 18px 40px}
-    .grid{display:grid; gap:14px}
-    @media (min-width: 900px){ .grid{grid-template-columns: 1.3fr .9fr} }
+    .wrap{max-width:1180px; margin:0 auto; padding:22px 18px 42px}
+    header{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:16px;
+      padding:8px 0 18px;
+    }
+    .title h1{margin:0; font-size:22px; letter-spacing:.2px}
+    .title p{margin:6px 0 0; color:var(--muted); line-height:1.35}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      border-radius:999px;
+      padding:8px 10px;
+      color:var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .grid{
+      display:grid; gap:14px;
+    }
+    @media (min-width: 980px){
+      .grid{grid-template-columns: 1.15fr .85fr;}
+    }
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid var(--border);
       border-radius:16px;
       padding:16px;
-      box-shadow: 0 10px 28px rgba(0,0,0,.35);
+      box-shadow: var(--shadow);
       backdrop-filter: blur(10px);
     }
-    .card h2{margin:0 0 10px; font-size:16px}
+    .card h2{margin:0 0 10px; font-size:14px; letter-spacing:.2px}
+    .sub{color:var(--muted); font-size:12px; line-height:1.35}
     .row{display:grid; gap:10px}
-    @media (min-width: 650px){
-      .row.two{grid-template-columns: 1fr 1fr}
-      .row.three{grid-template-columns: 1fr 1fr 1fr}
+    @media (min-width: 680px){
+      .row.two{grid-template-columns: 1fr 1fr;}
+      .row.three{grid-template-columns: 1fr 1fr 1fr;}
     }
-    label{display:block; font-size:12px; color:var(--muted); margin:4px 0 6px}
+    label{display:block; font-size:12px; color:var(--muted); margin:6px 0 6px}
     input, select, textarea{
       width:100%;
       padding:10px 11px;
@@ -49,82 +77,121 @@
       color: var(--text);
       outline:none;
     }
-    textarea{min-height:130px; resize:vertical}
+    textarea{min-height:92px; resize:vertical}
     input::placeholder, textarea::placeholder{color: rgba(234,240,255,.45)}
-    .hint{font-size:12px; color:var(--muted); margin-top:6px; line-height:1.35}
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 10px; border:1px dashed var(--border);
-      border-radius:999px; color:var(--muted); font-size:12px;
+    hr{border:none; border-top:1px solid var(--border); margin:14px 0}
+
+    /* Upload */
+    .drop{
+      border:1px dashed rgba(255,255,255,.20);
       background: rgba(0,0,0,.18);
+      border-radius:16px;
+      padding:14px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
     }
-    .pill b{color:var(--text)}
-    .actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px}
-    button{
+    .drop strong{display:block; font-size:13px}
+    .drop small{display:block; color:var(--muted); margin-top:4px; line-height:1.3}
+    .drop .left{display:flex; align-items:center; gap:12px}
+    .ico{
+      width:46px; height:46px; border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      display:grid; place-items:center;
+      flex:0 0 46px;
+    }
+    .ico svg{width:24px; height:24px; opacity:.95}
+    .btn{
       cursor:pointer;
       border:1px solid var(--border);
-      padding:11px 13px;
-      border-radius:12px;
       background: rgba(106,228,255,.12);
-      color: var(--text);
-      font-weight:600;
+      color:var(--text);
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:700;
+      font-size:12px;
     }
-    button.primary{
+    .btn.primary{
       background: linear-gradient(90deg, rgba(106,228,255,.22), rgba(167,139,250,.22));
       border-color: rgba(106,228,255,.35);
     }
-    button.ghost{background: rgba(255,255,255,.05)}
-    button:active{transform: translateY(1px)}
-    .previewGrid{
-      display:grid; gap:10px; grid-template-columns:1fr 1fr;
-      margin-top:10px;
-    }
+    .btn.ghost{background: rgba(255,255,255,.05)}
+    .btn:active{transform: translateY(1px)}
+    .actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px}
+
     .preview{
+      margin-top:12px;
       border:1px solid var(--border);
       background: rgba(0,0,0,.18);
-      border-radius:14px; padding:10px;
+      border-radius:16px;
+      overflow:hidden;
     }
+    .previewTop{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:10px 12px;
+      border-bottom:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+    }
+    .previewTop .meta{color:var(--muted); font-size:12px}
     .preview img{
-      width:100%; height:170px; object-fit:cover;
-      border-radius:10px; display:block;
-      border:1px solid rgba(255,255,255,.08);
+      width:100%;
+      height:auto;
+      display:block;
+      max-height:480px;
+      object-fit:contain;
+      background: rgba(0,0,0,.25);
     }
-    .preview .cap{margin-top:8px; font-size:12px; color:var(--muted)}
+
+    /* Toggle */
+    .toggleRow{display:flex; align-items:center; justify-content:space-between; gap:10px}
+    .toggle{
+      display:flex; align-items:center; gap:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+    }
+    .switch{
+      position:relative;
+      width:44px; height:24px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.25);
+      cursor:pointer;
+      flex:0 0 44px;
+    }
+    .switch::after{
+      content:"";
+      position:absolute; top:3px; left:3px;
+      width:18px; height:18px;
+      border-radius:999px;
+      background: rgba(255,255,255,.70);
+      transition: .18s ease;
+    }
+    .switch.on{
+      background: rgba(106,255,155,.18);
+      border-color: rgba(106,255,155,.35);
+    }
+    .switch.on::after{left:23px; background: rgba(106,255,155,.90)}
+    .toggle .tText b{display:block; font-size:12px}
+    .toggle .tText span{display:block; font-size:11px; color:var(--muted); margin-top:2px}
+
+    /* Output */
     .status{
-      margin-top:12px; padding:10px 12px;
-      border-radius:12px;
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:14px;
       border:1px solid var(--border);
       background: rgba(0,0,0,.18);
-      color: var(--muted);
-      font-size:12px; line-height:1.4;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
     }
     .status.ok{border-color: rgba(106,255,155,.35); color: rgba(106,255,155,.95)}
     .status.err{border-color: rgba(255,106,106,.35); color: rgba(255,106,106,.95)}
-    pre{
-      white-space: pre-wrap;
-      word-break: break-word;
-      margin:12px 0 0;
-      padding:12px;
-      border-radius:12px;
-      border:1px solid var(--border);
-      background: rgba(0,0,0,.25);
-      color: rgba(234,240,255,.9);
-      font-size:12px;
-    }
-    footer{max-width:1100px; margin:0 auto; padding:0 18px 30px; color:var(--muted); font-size:12px}
-    .req{color: rgba(255,255,255,.65); font-weight:600}
-    hr{border:none;border-top:1px solid var(--border); margin:14px 0}
-
-    /* Results UI */
-    .resultBox{
-      margin-top:14px;
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:14px;
-      background: rgba(0,0,0,.18);
-    }
-    .resultBox h3{margin:0 0 8px; font-size:14px}
-    .chips{display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 10px}
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 0}
     .chip{
       font-size:12px;
       padding:6px 10px;
@@ -136,1360 +203,404 @@
     .chip.ok{border-color: rgba(106,255,155,.35)}
     .chip.warn{border-color: rgba(255,210,106,.35)}
     .chip.bad{border-color: rgba(255,106,106,.35)}
-    .list{
-      margin:0; padding-left:18px; color: rgba(234,240,255,.92); line-height:1.45;
-    }
-    .muted{color:var(--muted)}
-    .twoCols{display:grid; gap:12px}
-    @media (min-width: 650px){ .twoCols{grid-template-columns:1fr 1fr} }
-    .scoreRow{
-      display:flex; justify-content:space-between; gap:10px; align-items:baseline;
-      padding:8px 10px; border:1px solid var(--border); border-radius:12px;
-      background: rgba(255,255,255,.04);
-      margin-bottom:8px;
-    }
-    .scoreRow b{font-size:12px}
-    .scoreRow span{font-size:12px; color:var(--muted)}
-    .miniBtn{
-      padding:8px 10px;
-      border-radius:12px;
-      background: rgba(255,255,255,.04);
+    .outBox{
+      margin-top:12px;
       border:1px solid var(--border);
-      font-size:12px;
-      font-weight:600;
-    }
-
-    /* Wear selection (schematic) */
-    .wearHeader{display:flex; align-items:center; justify-content:space-between; gap:10px}
-    .wearGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-      margin-top:10px;
-    }
-    @media (min-width: 650px){
-      .wearGrid{ grid-template-columns: 1fr 1fr 1fr; }
-    }
-    .wearCard{
-      text-align:left;
-      padding:10px;
-      border-radius:14px;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.04);
-      display:flex;
-      gap:10px;
-      align-items:center;
-      min-height:74px;
-    }
-    .wearCard:hover{border-color: rgba(106,228,255,.35)}
-    .wearCard.selected{
-      border-color: rgba(106,255,155,.40);
-      background: rgba(106,255,155,.08);
-    }
-    .wearIcon{
-      width:52px; height:52px;
-      border-radius:12px;
       background: rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.10);
-      display:grid;
-      place-items:center;
-      flex: 0 0 52px;
+      border-radius:16px;
+      padding:14px;
     }
-    .wearText b{display:block; font-size:12px}
-    .wearText span{display:block; font-size:11px; color:var(--muted); margin-top:2px; line-height:1.2}
-    svg{width:44px; height:44px}
-    .wearHintRow{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
-
-    /* Insert parser UI */
-    .parserBox{
-      margin-top:10px;
+    .outBox h3{margin:0 0 8px; font-size:14px}
+    .outGrid{display:grid; gap:12px}
+    @media (min-width: 680px){
+      .outGrid{grid-template-columns: 1fr 1fr;}
+    }
+    .kv{
       border:1px solid var(--border);
       background: rgba(255,255,255,.04);
       border-radius:14px;
-      padding:10px;
+      padding:12px;
     }
-    .parserBox .muted{font-size:12px}
+    .kv b{display:block; font-size:12px}
+    .kv p{margin:6px 0 0; color:var(--muted); font-size:12px; line-height:1.35}
+    ul{margin:8px 0 0; padding-left:18px; color:rgba(234,240,255,.92); line-height:1.45}
+    .small{font-size:11px; color:var(--muted)}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;}
+    pre{
+      white-space:pre-wrap;
+      word-break:break-word;
+      margin:12px 0 0;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.25);
+      color: rgba(234,240,255,.92);
+      font-size:12px;
+    }
   </style>
 </head>
-
 <body>
-<header>
-  <h1>Tool-Engineering – Werkzeugexperte</h1>
-  <p>Automatische Ursachenanalyse & priorisierte Maßnahmenliste (Pareto). Eingabe: Problem + Prozessdaten + optional Fotos + Verschleißbilder.</p>
-</header>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <h1>TA Desk – Chart Review</h1>
+        <p>Professionelles Technical-Analysis Template (Weekly Bias + Day Execution). Upload → Analyse-Report (strukturierter Output).</p>
+      </div>
+      <div class="badge">⚡ Private Tool • v1 UI</div>
+    </header>
 
-<main class="grid">
-  <section class="card">
-    <h2>1) Problem & Kontext</h2>
+    <div class="grid">
+      <!-- LEFT -->
+      <section class="card">
+        <h2>Input</h2>
+        <div class="sub">Upload deinen Chart (Screenshot). Wähle Timeframe & Market, optional Notizen. Dann „Analyse starten“.</div>
 
-    <form id="analysisForm" autocomplete="on">
-      <div class="row">
-        <div>
-          <label for="problemText"><span class="req">Problembeschreibung (Freitext)</span></label>
-          <textarea id="problemText" name="problemText" placeholder="z. B. Kantenbruch nach 3 Minuten, Oberfläche schlecht, Aufbauschneide sichtbar, Vibrationen/Rattern..." required></textarea>
-          <div class="hint">
-            Tipp: Schreib Symptome, Standzeit, wann es passiert (Anlauf/Einstechen/Schlichtgang), und was du bereits versucht hast.
-          </div>
-
-          <!-- Wear selection -->
-          <div style="margin-top:12px">
-            <div class="wearHeader">
-              <div class="muted">Verschleißbilder (schematisch) – klickt als Tags in den Freitext</div>
-              <button class="miniBtn" type="button" id="clearWear">Auswahl löschen</button>
+        <div style="margin-top:12px" class="drop" id="dropZone">
+          <div class="left">
+            <div class="ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 16V8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M8.5 11.5 12 8l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M5 16.5C3.4 16.2 2 14.7 2 12.9 2 11 3.5 9.5 5.4 9.4 6.1 7.4 7.9 6 10 6c2 0 3.8 1.3 4.5 3.1 1.9.1 3.5 1.7 3.5 3.7 0 1.9-1.4 3.4-3.2 3.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
             </div>
-
-            <div class="wearGrid" id="wearGrid" aria-label="Verschleißbilder Auswahl">
-              <button type="button" class="wearCard" data-tag="[VB] Flankenverschleiß" data-key="FLANKENVERSCHLEISS">
-                <div class="wearIcon">
-                  <svg viewBox="0 0 120 80" aria-hidden="true">
-                    <rect x="18" y="18" width="84" height="44" rx="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.18)"/>
-                    <path d="M30 52 L92 52" stroke="rgba(255,255,255,.85)" stroke-width="4" stroke-linecap="round"/>
-                    <path d="M30 45 L92 45" stroke="rgba(255,255,255,.35)" stroke-width="2" stroke-linecap="round"/>
-                  </svg>
-                </div>
-                <div class="wearText">
-                  <b>Flanke (VB)</b>
-                  <span>Verschleißmarke an Flanke</span>
-                </div>
-              </button>
-
-              <button type="button" class="wearCard" data-tag="[KOLK] Kolkverschleiß" data-key="KOLKVERSCHLEISS">
-                <div class="wearIcon">
-                  <svg viewBox="0 0 120 80" aria-hidden="true">
-                    <rect x="18" y="18" width="84" height="44" rx="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.18)"/>
-                    <ellipse cx="62" cy="40" rx="20" ry="10" fill="rgba(255,255,255,.20)" />
-                    <ellipse cx="62" cy="40" rx="10" ry="5" fill="rgba(255,255,255,.35)" />
-                  </svg>
-                </div>
-                <div class="wearText">
-                  <b>Kolk</b>
-                  <span>Krater auf Spanfläche</span>
-                </div>
-              </button>
-
-              <button type="button" class="wearCard" data-tag="[BUE] Aufbauschneide" data-key="AUFBAUSCHNEIDE">
-                <div class="wearIcon">
-                  <svg viewBox="0 0 120 80" aria-hidden="true">
-                    <rect x="18" y="18" width="84" height="44" rx="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.18)"/>
-                    <path d="M32 50 L70 32 L92 50" fill="rgba(255,255,255,.22)" stroke="rgba(255,255,255,.55)" stroke-width="2" />
-                    <circle cx="70" cy="32" r="6" fill="rgba(255,255,255,.35)"/>
-                  </svg>
-                </div>
-                <div class="wearText">
-                  <b>Aufbauschneide</b>
-                  <span>Aufschweißungen / Kleben</span>
-                </div>
-              </button>
-
-              <button type="button" class="wearCard" data-tag="[AUSBRUCH] Kantenbruch/Chipping" data-key="KANTENBRUCH">
-                <div class="wearIcon">
-                  <svg viewBox="0 0 120 80" aria-hidden="true">
-                    <rect x="18" y="18" width="84" height="44" rx="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.18)"/>
-                    <path d="M30 56 L92 56" stroke="rgba(255,255,255,.85)" stroke-width="4" stroke-linecap="round"/>
-                    <path d="M60 56 L70 46 L80 56" fill="rgba(255,106,106,.18)" stroke="rgba(255,106,106,.55)" stroke-width="2"/>
-                  </svg>
-                </div>
-                <div class="wearText">
-                  <b>Kantenbruch</b>
-                  <span>Mikroausbrüche/Chipping</span>
-                </div>
-              </button>
-
-              <button type="button" class="wearCard" data-tag="[KERBE] Kerbverschleiß (Notch)" data-key="KERB">
-                <div class="wearIcon">
-                  <svg viewBox="0 0 120 80" aria-hidden="true">
-                    <rect x="18" y="18" width="84" height="44" rx="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.18)"/>
-                    <path d="M30 56 L92 56" stroke="rgba(255,255,255,.85)" stroke-width="4" stroke-linecap="round"/>
-                    <path d="M30 56 L30 38" stroke="rgba(255,210,106,.70)" stroke-width="4" stroke-linecap="round"/>
-                  </svg>
-                </div>
-                <div class="wearText">
-                  <b>Kerbverschleiß</b>
-                  <span>An Eintrittslinie/Schulter</span>
-                </div>
-              </button>
-
-              <button type="button" class="wearCard" data-tag="[RATTERN] Vibrationen/Rattern" data-key="RATTERN">
-                <div class="wearIcon">
-                  <svg viewBox="0 0 120 80" aria-hidden="true">
-                    <rect x="18" y="18" width="84" height="44" rx="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.18)"/>
-                    <path d="M28 46 C38 36, 48 56, 58 46 S78 56, 92 44" fill="none" stroke="rgba(255,210,106,.85)" stroke-width="3" stroke-linecap="round"/>
-                  </svg>
-                </div>
-                <div class="wearText">
-                  <b>Rattern</b>
-                  <span>Schwingung/Chatter</span>
-                </div>
-              </button>
-            </div>
-
-            <div class="wearHintRow">
-              <span class="pill">🧷 Klick mehrere Bilder — sie werden als <b>[TAGS]</b> in den Text übernommen.</span>
+            <div>
+              <strong>Chart hochladen</strong>
+              <small>Drag & Drop oder Datei auswählen (PNG/JPG). TradingView/MT4/… Screenshot ist perfekt.</small>
             </div>
           </div>
-          <!-- /Wear selection -->
+
+          <div>
+            <label class="btn" for="chartUpload">Datei wählen</label>
+            <input id="chartUpload" type="file" accept="image/*" style="display:none" />
+          </div>
         </div>
+
+        <div class="preview" id="previewBox" style="display:none">
+          <div class="previewTop">
+            <div class="meta" id="imgMeta">—</div>
+            <button class="btn ghost" type="button" id="removeImg">Bild entfernen</button>
+          </div>
+          <img id="previewImg" alt="Chart Vorschau" />
+        </div>
+
+        <hr>
 
         <div class="row three">
           <div>
-            <label for="processType"><span class="req">Bearbeitungsart</span></label>
-            <select id="processType" name="processType" required>
-              <option value="" selected disabled>Bitte wählen…</option>
-              <option>Drehen</option>
-              <option>Fräsen</option>
-              <option>Bohren</option>
-              <option>Stechen/Nuten</option>
-              <option>Gewinde</option>
-              <option>Sonstiges</option>
+            <label for="timeframe">Timeframe</label>
+            <select id="timeframe">
+              <option value="Weekly">Weekly</option>
+              <option value="Daily">Daily</option>
+              <option value="H4">H4</option>
+              <option value="H1">H1</option>
+              <option value="M15">M15</option>
+              <option value="M5">M5</option>
             </select>
           </div>
+
           <div>
-            <label for="operation"><span class="req">Operation</span></label>
-            <select id="operation" name="operation" required>
-              <option value="" selected disabled>Bitte wählen…</option>
-              <option>Schruppen</option>
-              <option>Schlichten</option>
-              <option>Schruppen + Schlichten</option>
-              <option>Einstechen/Abstechen</option>
-              <option>Kontur</option>
-              <option>Planen</option>
-              <option>Sonstiges</option>
+            <label for="market">Market</label>
+            <select id="market">
+              <option value="Aktie">Aktie</option>
+              <option value="Index">Index</option>
+              <option value="Forex">Forex</option>
+              <option value="Krypto">Krypto</option>
+              <option value="Rohstoff">Rohstoff</option>
             </select>
           </div>
+
           <div>
-            <label for="diameter">Ø / Breite (mm)</label>
-            <input id="diameter" name="diameter" type="number" step="0.01" min="0" placeholder="z. B. 62" />
+            <label for="asset">Asset / Ticker</label>
+            <input id="asset" placeholder="z. B. AAPL, DAX, EURUSD, BTCUSD" />
           </div>
         </div>
-      </div>
 
-      <hr>
-
-      <h2 style="margin-top:0">2) Werkstoff & Maschine</h2>
-      <div class="row two">
-        <div>
-          <label for="materialGroup"><span class="req">Werkstoffgruppe</span></label>
-          <select id="materialGroup" name="materialGroup" required>
-            <option value="" selected disabled>Bitte wählen…</option>
-            <option value="P">ISO P – Stahl</option>
-            <option value="M">ISO M – Edelstahl</option>
-            <option value="K">ISO K – Guss</option>
-            <option value="N">ISO N – NE-Metalle (Alu, Cu…)</option>
-            <option value="S">ISO S – Superlegierungen (Inconel, Ti…)</option>
-            <option value="H">ISO H – Gehärtete Werkstoffe</option>
-          </select>
-          <div class="hint">Wenn du es nicht sicher weißt: nimm die wahrscheinlichste Gruppe.</div>
-        </div>
-        <div>
-          <label for="materialSpec"><span class="req">Werkstoffbezeichnung</span></label>
-          <input id="materialSpec" name="materialSpec" placeholder="z. B. 1.4301 / X5CrNi18-10 / C45 / GG25 / Ti6Al4V" required />
-        </div>
-      </div>
-
-      <div class="row two" style="margin-top:10px">
-        <div>
-          <label for="machineBrand">Maschine – Marke/Typ</label>
-          <input id="machineBrand" name="machineBrand" placeholder="z. B. DMG Mori NLX / Mazak / Okuma…" />
-        </div>
-        <div>
-          <label for="machineNotes">Maschinenhinweise</label>
-          <input id="machineNotes" name="machineNotes" placeholder="z. B. Spindel 6000 rpm, angetriebene Werkzeuge, Dynamik-Probleme…" />
-        </div>
-      </div>
-
-      <hr>
-
-      <h2 style="margin-top:0">3) Werkzeug (ISO / Normcode)</h2>
-      <div class="row two">
-        <div>
-          <label for="insertCode"><span class="req">Wendeplatte (z. B. CMNG 1504-08-PM05)</span></label>
-          <input id="insertCode" name="insertCode" placeholder="CMNG 1504-08-PM05" required />
-          <div class="hint">Wenn vorhanden: Hersteller + Sorte/Beschichtung ergänzen.</div>
-
-          <div class="parserBox">
-            <div class="muted"><b>ISO-Parser Vorschau</b> (automatisch):</div>
-            <div class="chips" id="insertParseChips" style="margin-top:8px"></div>
-            <div class="muted" id="insertParseNote"></div>
+        <div style="margin-top:10px" class="toggleRow">
+          <div class="toggle" style="width:100%">
+            <div class="tText">
+              <b>Weekly Bias berücksichtigen</b>
+              <span>Weekly Kontext wird im Fazit priorisiert (empfohlen).</span>
+            </div>
+            <div class="switch on" id="weeklySwitch" role="switch" aria-checked="true" tabindex="0"></div>
           </div>
         </div>
-        <div>
-          <label for="holderCode">Halter / Werkzeugaufnahme (Normcode)</label>
-          <input id="holderCode" name="holderCode" placeholder="z. B. PCLNR 2525M12 / SCLCR…" />
-        </div>
-      </div>
-
-      <div class="row two" style="margin-top:10px">
-        <div>
-          <label for="toolOverhang">Überstand / Auskragung (mm)</label>
-          <input id="toolOverhang" name="toolOverhang" type="number" step="0.1" min="0" placeholder="z. B. 55" />
-        </div>
-        <div>
-          <label for="clamping">Spannung (Bauteil)</label>
-          <input id="clamping" name="clamping" placeholder="z. B. Dreibackenfutter + Reitstock / Spannzange / Aufspannung..." />
-        </div>
-      </div>
-
-      <hr>
-
-      <h2 style="margin-top:0">4) Schnittdaten & Kühlschmierung</h2>
-      <div class="row three">
-        <div>
-          <label for="vc"><span class="req">vc (m/min)</span></label>
-          <input id="vc" name="vc" type="number" step="0.1" min="0" placeholder="z. B. 180" required />
-        </div>
-        <div>
-          <label for="f"><span class="req">f (mm/U oder mm/Z)</span></label>
-          <input id="f" name="f" type="number" step="0.001" min="0" placeholder="z. B. 0.18" required />
-        </div>
-        <div>
-          <label for="ap"><span class="req">ap (mm)</span></label>
-          <input id="ap" name="ap" type="number" step="0.01" min="0" placeholder="z. B. 2.0" required />
-        </div>
-      </div>
-
-      <div class="row two" style="margin-top:10px">
-        <div>
-          <label for="cooling"><span class="req">Kühlschmierung</span></label>
-          <select id="cooling" name="cooling" required>
-            <option value="" selected disabled>Bitte wählen…</option>
-            <option>Trocken</option>
-            <option>Emulsion (Standard)</option>
-            <option>Hochdruckkühlung</option>
-            <option>MQL</option>
-            <option>Öl</option>
-            <option>Unbekannt</option>
-          </select>
-        </div>
-        <div>
-          <label for="coolingNotes">Kühlhinweise</label>
-          <input id="coolingNotes" name="coolingNotes" placeholder="z. B. 70 bar, Düse trifft Schneide nicht, Kühlung unterbrochen..." />
-        </div>
-      </div>
-
-      <hr>
-
-      <h2 style="margin-top:0">5) Fotos (optional)</h2>
-      <div class="row two">
-        <div>
-          <label for="toolPhoto">Foto: Werkzeug / Schneide</label>
-          <input id="toolPhoto" name="toolPhoto" type="file" accept="image/*" />
-          <div class="hint">Ideal: Nahaufnahme der Schneidkante (scharf, gut beleuchtet).</div>
-        </div>
-        <div>
-          <label for="partPhoto">Foto: Bauteil / Oberfläche / Span</label>
-          <input id="partPhoto" name="partPhoto" type="file" accept="image/*" />
-          <div class="hint">Ideal: Oberfläche + Spanform + Problemstelle.</div>
-        </div>
-      </div>
-
-      <div class="previewGrid" aria-live="polite">
-        <div class="preview">
-          <img id="toolPreview" alt="Vorschau Werkzeugfoto" src="" style="display:none" />
-          <div class="cap" id="toolPreviewCap">Keine Vorschau</div>
-        </div>
-        <div class="preview">
-          <img id="partPreview" alt="Vorschau Bauteilfoto" src="" style="display:none" />
-          <div class="cap" id="partPreviewCap">Keine Vorschau</div>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button class="primary" type="submit">Analyse starten</button>
-        <button class="ghost" type="button" id="fillDemo">Demo-Daten füllen</button>
-        <button class="ghost" type="button" id="resetBtn">Zurücksetzen</button>
-      </div>
-
-      <div id="formStatus" class="status">Bereit. Bitte Felder ausfüllen und „Analyse starten“ klicken.</div>
-      <pre id="payloadPreview" aria-label="Datenvorschau (JSON)"></pre>
-
-      <div id="results" class="resultBox" style="display:none">
-        <h3>Analyse-Ergebnis (Prototyp V2)</h3>
-        <div class="muted" id="resultsMeta"></div>
 
         <div style="margin-top:10px">
-          <div class="muted" style="margin-bottom:6px">Erkannte Symptome / Problemklassen</div>
-          <div class="chips" id="symptomChips"></div>
+          <label for="notes">Notizen (optional)</label>
+          <textarea id="notes" placeholder="z. B. Ich sehe Resistance bei 1.0950, RSI Divergenz, Volumen spike bei Breakout…"></textarea>
+          <div class="small">Tipp: Schreib dazu, ob du eher Swing (Tage/Wochen) oder Day-Trading (Intraday) machst.</div>
         </div>
 
-        <div class="twoCols">
-          <div>
-            <div class="muted" style="margin:8px 0 6px">Wahrscheinliche Ursachen (Score)</div>
-            <div id="causeList"></div>
+        <div class="actions">
+          <button class="btn primary" type="button" id="runBtn">Analyse starten</button>
+          <button class="btn ghost" type="button" id="demoBtn">Demo füllen</button>
+          <button class="btn ghost" type="button" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="status" id="statusBox">Bereit. Upload ein Chart-Bild und starte die Analyse.</div>
+        <pre id="payloadBox" style="display:none"></pre>
+
+      </section>
+
+      <!-- RIGHT -->
+      <aside class="card">
+        <h2>Output</h2>
+        <div class="sub">Hier erscheint dein strukturierter TA-Report. (Aktuell: Template + Platzhalter, bereit für die Analyse-Engine.)</div>
+
+        <div class="outBox" id="outBox" style="display:none">
+          <h3>Technical Analysis Report</h3>
+
+          <div class="chips" id="tagChips"></div>
+
+          <div class="outGrid" style="margin-top:12px">
+            <div class="kv">
+              <b>Marktphase</b>
+              <p id="outPhase">—</p>
+            </div>
+            <div class="kv">
+              <b>Trendbewertung</b>
+              <p id="outTrend">—</p>
+            </div>
           </div>
-          <div>
-            <div class="muted" style="margin:8px 0 6px">Priorisierte Maßnahmen (Pareto)</div>
 
-            <div class="muted" style="margin:6px 0 4px">🟢 Top (20% → 80% Wirkung)</div>
-            <ul class="list" id="measuresTop"></ul>
+          <div class="kv" style="margin-top:12px">
+            <b>Technische Argumente</b>
+            <ul id="outArgs"></ul>
+          </div>
 
-            <div class="muted" style="margin:10px 0 4px">🟡 Sekundär</div>
-            <ul class="list" id="measuresSecondary"></ul>
+          <div class="outGrid" style="margin-top:12px">
+            <div class="kv">
+              <b>Szenario A (Hauptszenario)</b>
+              <p id="outScenarioA">—</p>
+            </div>
+            <div class="kv">
+              <b>Szenario B (Alternativ)</b>
+              <p id="outScenarioB">—</p>
+            </div>
+          </div>
 
-            <div class="muted" style="margin:10px 0 4px">🔵 Randbedingungen / falls es „hakt“</div>
-            <ul class="list" id="measuresEdge"></ul>
+          <div class="kv" style="margin-top:12px">
+            <b>Fazit & Invalidation</b>
+            <p id="outConclusion">—</p>
+          </div>
+
+          <div class="small" style="margin-top:10px">
+            Hinweis: Das ist eine Analyse-/Entscheidungsunterstützung, kein Trading-Signal.
           </div>
         </div>
 
-        <div class="hint" style="margin-top:10px">
-          Hinweis: V2 nutzt zusätzlich Werkzeugcode-Hinweise (z. B. negative Platte N=0° → höhere Kräfte, mehr Steifigkeitsbedarf).
+        <div class="outBox">
+          <div class="sub">
+            <b>Pro-Workflow (Option 1):</b><br><br>
+            1) <b>Weekly:</b> Struktur & Bias definieren<br>
+            2) <b>Daily/H4:</b> Levels & Setup-Zone bestimmen<br>
+            3) <b>Intraday:</b> Entry/Exit nur im Rahmen des Bias<br><br>
+            <span class="small">Wenn du willst, ergänzen wir als nächstes: Level-Checkliste (Support/Resistance, Trendline, MA, RSI, MACD, Volume).</span>
+          </div>
         </div>
-      </div>
-    </form>
-  </section>
-
-  <aside class="card">
-    <h2>Ausgabe-Ziel</h2>
-    <div class="pill">🟢 <b>Pareto Top-Maßnahmen</b> (20% → 80% Wirkung)</div><br><br>
-    <div class="pill">🟡 <b>Sekundäre Maßnahmen</b></div><br><br>
-    <div class="pill">🔵 <b>Randbedingungen</b> (Maschine/Spannung/Steifigkeit)</div>
-
-    <div class="hint" style="margin-top:14px">
-      <b>Best Practice:</b><br>
-      • Klick Verschleißbilder (Tags) + schreibe Standzeit<br>
-      • Beschreibe Span (lang/kurz/blau) + Oberfläche<br>
-      • Bei Problemen: vc/f/ap + Kühlung + Steifigkeit
+      </aside>
     </div>
+  </div>
 
-    <hr>
+  <script>
+    const chartUpload = document.getElementById('chartUpload');
+    const dropZone = document.getElementById('dropZone');
+    const previewBox = document.getElementById('previewBox');
+    const previewImg = document.getElementById('previewImg');
+    const imgMeta = document.getElementById('imgMeta');
+    const removeImg = document.getElementById('removeImg');
 
-    <h2>V2 aktiv</h2>
-    <div class="hint">
-      • ISO-Code-Parser aktiv (Form/Freiwinkel/Toleranz/Typ + Größen-Codes)<br>
-      • Parser beeinflusst Ursachen-Scoring (z. B. negative Platte → höhere Kräfte)
-    </div>
-  </aside>
-</main>
+    const timeframe = document.getElementById('timeframe');
+    const market = document.getElementById('market');
+    const asset = document.getElementById('asset');
+    const notes = document.getElementById('notes');
 
-<footer>
-  Tool-Engineering – Prototyp V2: Verschleißbilder klickbar + ISO-Code-Parser + Pareto-Maßnahmen.
-</footer>
+    const weeklySwitch = document.getElementById('weeklySwitch');
+    const runBtn = document.getElementById('runBtn');
+    const demoBtn = document.getElementById('demoBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const statusBox = document.getElementById('statusBox');
+    const payloadBox = document.getElementById('payloadBox');
 
-<script>
-  const form = document.getElementById('analysisForm');
-  const statusBox = document.getElementById('formStatus');
-  const payloadPreview = document.getElementById('payloadPreview');
+    const outBox = document.getElementById('outBox');
+    const tagChips = document.getElementById('tagChips');
+    const outPhase = document.getElementById('outPhase');
+    const outTrend = document.getElementById('outTrend');
+    const outArgs = document.getElementById('outArgs');
+    const outScenarioA = document.getElementById('outScenarioA');
+    const outScenarioB = document.getElementById('outScenarioB');
+    const outConclusion = document.getElementById('outConclusion');
 
-  const toolPhoto = document.getElementById('toolPhoto');
-  const partPhoto = document.getElementById('partPhoto');
-  const toolPreview = document.getElementById('toolPreview');
-  const partPreview = document.getElementById('partPreview');
-  const toolPreviewCap = document.getElementById('toolPreviewCap');
-  const partPreviewCap = document.getElementById('partPreviewCap');
+    let weeklyBiasOn = true;
+    let imageFile = null;
 
-  const resultsBox = document.getElementById('results');
-  const resultsMeta = document.getElementById('resultsMeta');
-  const symptomChips = document.getElementById('symptomChips');
-  const causeList = document.getElementById('causeList');
-  const measuresTop = document.getElementById('measuresTop');
-  const measuresSecondary = document.getElementById('measuresSecondary');
-  const measuresEdge = document.getElementById('measuresEdge');
-
-  const problemTextEl = document.getElementById('problemText');
-  const wearGrid = document.getElementById('wearGrid');
-  const clearWearBtn = document.getElementById('clearWear');
-
-  const insertCodeEl = document.getElementById('insertCode');
-  const insertParseChips = document.getElementById('insertParseChips');
-  const insertParseNote = document.getElementById('insertParseNote');
-
-  function setStatus(type, msg){
-    statusBox.classList.remove('ok','err');
-    if(type) statusBox.classList.add(type);
-    statusBox.textContent = msg;
-  }
-
-  function fileToPreview(file, imgEl, capEl){
-    if(!file){
-      imgEl.style.display = 'none';
-      imgEl.src = '';
-      capEl.textContent = 'Keine Vorschau';
-      return;
+    function setStatus(type, text){
+      statusBox.classList.remove('ok','err');
+      if(type) statusBox.classList.add(type);
+      statusBox.textContent = text;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      imgEl.src = reader.result;
-      imgEl.style.display = 'block';
-      capEl.textContent = `${file.name} (${Math.round(file.size/1024)} KB)`;
-    };
-    reader.readAsDataURL(file);
-  }
 
-  toolPhoto.addEventListener('change', (e) => fileToPreview(e.target.files[0], toolPreview, toolPreviewCap));
-  partPhoto.addEventListener('change', (e) => fileToPreview(e.target.files[0], partPreview, partPreviewCap));
+    function setSwitch(on){
+      weeklyBiasOn = on;
+      weeklySwitch.classList.toggle('on', on);
+      weeklySwitch.setAttribute('aria-checked', String(on));
+    }
 
-  // -------------------------
-  // Wear tags insertion
-  // -------------------------
-  function normalizeSpaces(s){ return (s || "").replace(/\s+/g, " ").trim(); }
-
-  function ensureTagInText(tag){
-    const tagNorm = tag.trim();
-    const t = problemTextEl.value || "";
-    if(t.includes(tagNorm)) return;
-    let prefix = t.trim().length ? (t.trim().endsWith(".") ? " " : ". ") : "";
-    problemTextEl.value = normalizeSpaces(t + prefix + tagNorm);
-  }
-
-  function removeTagFromText(tag){
-    const tagNorm = tag.trim();
-    let t = problemTextEl.value || "";
-    t = t.replaceAll(tagNorm, "")
-         .replace(/\s+\./g, ".")
-         .replace(/\.\s*\./g, ".")
-         .replace(/\s{2,}/g, " ")
-         .trim();
-    t = t.replace(/^\.\s*/,"");
-    problemTextEl.value = t;
-  }
-
-  wearGrid.addEventListener("click", (e) => {
-    const btn = e.target.closest(".wearCard");
-    if(!btn) return;
-    const tag = btn.getAttribute("data-tag");
-    const selected = btn.classList.toggle("selected");
-    if(selected) ensureTagInText(tag);
-    else removeTagFromText(tag);
-  });
-
-  clearWearBtn.addEventListener("click", () => {
-    const btns = wearGrid.querySelectorAll(".wearCard.selected");
-    btns.forEach(b => {
-      b.classList.remove("selected");
-      const tag = b.getAttribute("data-tag");
-      removeTagFromText(tag);
+    weeklySwitch.addEventListener('click', () => setSwitch(!weeklyBiasOn));
+    weeklySwitch.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSwitch(!weeklyBiasOn); }
     });
-  });
 
-  // -------------------------
-  // ISO Insert Code Parser (V2)
-  // - robust & cautious: zeigt Codes + Deutung, ohne mm-Behauptungen
-  // -------------------------
-  const SHAPE_MAP = {
-    C: "C = Rhombus 80°",
-    D: "D = Rhombus 55°",
-    V: "V = Rhombus 35°",
-    S: "S = Quadrat 90°",
-    T: "T = Dreieck 60°",
-    W: "W = Trigon 80°",
-    R: "R = Rund",
-    P: "P = Pentagon",
-    O: "O = Oktagon"
-  };
-
-  const CLEARANCE_MAP = {
-    N: "N = 0° (negativ)",
-    C: "C = 7°",
-    P: "P = 11°",
-    E: "E = 20°",
-    A: "A = 3°",
-    B: "B = 5°",
-    D: "D = 15°"
-  };
-
-  const TOL_MAP = {
-    M: "M = mittlere Toleranz",
-    G: "G = geschliffen/präzise (typisch)",
-    E: "E = eng",
-    K: "K = grob",
-    U: "U = ungeschliffen (typisch)"
-  };
-
-  const TYPE_MAP = {
-    G: "G = mit Loch/Spanformer (typisch)",
-    M: "M = mit Loch (typisch)",
-    N: "N = ohne Loch (typisch)",
-    T: "T = spezielle Ausführung"
-  };
-
-  function normalizeInsertCode(raw){
-    return (raw || "")
-      .toUpperCase()
-      .replace(/\s+/g, " ")
-      .replace(/–/g, "-")
-      .trim();
-  }
-
-  function parseInsertCode(raw){
-    const code = normalizeInsertCode(raw);
-    // Try to extract leading 4 letters
-    const m = code.match(/^([A-Z]{4})\s*([0-9]{4})?(-?[0-9]{2})?(-?[A-Z0-9]+)?/);
-    if(!m){
-      return { ok:false, code, message:"Kein ISO-Muster erkannt." };
+    function showImage(file){
+      imageFile = file;
+      const url = URL.createObjectURL(file);
+      previewImg.src = url;
+      previewBox.style.display = 'block';
+      imgMeta.textContent = `${file.name} • ${Math.round(file.size/1024)} KB`;
     }
 
-    const letters = m[1] || "";
-    const size4 = m[2] || "";
-    // radius often after "-" e.g. -08
-    const r2 = (m[3] || "").replace("-","");
-    const tail = (m[4] || "").replace(/^-/, "");
-
-    const shape = letters[0];
-    const clearance = letters[1];
-    const tol = letters[2];
-    const type = letters[3];
-
-    const chips = [];
-    if(shape) chips.push({ text: SHAPE_MAP[shape] || `${shape} = Form (unbek.)`, tone:"ok" });
-    if(clearance) chips.push({ text: CLEARANCE_MAP[clearance] || `${clearance} = Freiwinkel (unbek.)`, tone: clearance==="N" ? "warn" : "ok" });
-    if(tol) chips.push({ text: TOL_MAP[tol] || `${tol} = Toleranz (unbek.)`, tone:"ok" });
-    if(type) chips.push({ text: TYPE_MAP[type] || `${type} = Typ (unbek.)`, tone:"ok" });
-
-    // Size codes (keep as codes, not mm)
-    if(size4){
-      const ic = size4.slice(0,2);
-      const th = size4.slice(2,4);
-      chips.push({ text: `Größe: IC-Code ${ic}`, tone:"ok" });
-      chips.push({ text: `Dicke-Code ${th}`, tone:"ok" });
-    }
-    if(r2){
-      chips.push({ text: `Eckenradius-Code ${r2}`, tone:"ok" });
-    }
-    if(tail){
-      chips.push({ text: `Zusatz: ${tail}`, tone:"ok" });
+    function clearImage(){
+      imageFile = null;
+      previewImg.src = '';
+      previewBox.style.display = 'none';
+      imgMeta.textContent = '—';
+      chartUpload.value = '';
     }
 
-    // Derived hints for scoring
-    const derived = {
-      negative: clearance === "N",
-      positive: ["C","P","E","D","B","A"].includes(clearance),
-      shape,
-      clearance,
-      tol,
-      type,
-      size4,
-      radiusCode: r2 || null,
-      tail: tail || null
-    };
-
-    return { ok:true, code, letters, derived, chips, message:"ISO-Code erkannt (Deutung vereinfacht, herstellerneutral)." };
-  }
-
-  function renderInsertParse(){
-    const parsed = parseInsertCode(insertCodeEl.value);
-    insertParseChips.innerHTML = "";
-    if(!parsed.ok){
-      insertParseNote.textContent = parsed.message;
-      return parsed;
-    }
-    for(const c of parsed.chips){
-      const el = document.createElement("div");
-      el.className = "chip " + (c.tone === "warn" ? "warn" : "ok");
-      el.textContent = c.text;
-      insertParseChips.appendChild(el);
-    }
-    insertParseNote.textContent = parsed.message;
-    return parsed;
-  }
-
-  insertCodeEl.addEventListener("input", () => renderInsertParse());
-
-  function collectFormData(){
-    const fd = new FormData(form);
-    const insertParsed = renderInsertParse();
-
-    const payload = {
-      problemText: (fd.get('problemText') || '').toString().trim(),
-      processType: fd.get('processType') || '',
-      operation: fd.get('operation') || '',
-      diameter_mm: fd.get('diameter') ? Number(fd.get('diameter')) : null,
-
-      materialGroup: fd.get('materialGroup') || '',
-      materialSpec: (fd.get('materialSpec') || '').toString().trim(),
-
-      machineBrand: (fd.get('machineBrand') || '').toString().trim(),
-      machineNotes: (fd.get('machineNotes') || '').toString().trim(),
-
-      insertCode: (fd.get('insertCode') || '').toString().trim(),
-      insertParsed: insertParsed.ok ? insertParsed.derived : null,
-
-      holderCode: (fd.get('holderCode') || '').toString().trim(),
-      toolOverhang_mm: fd.get('toolOverhang') ? Number(fd.get('toolOverhang')) : null,
-      clamping: (fd.get('clamping') || '').toString().trim(),
-
-      cuttingData: {
-        vc_m_per_min: fd.get('vc') ? Number(fd.get('vc')) : null,
-        f_mm_per_rev_or_tooth: fd.get('f') ? Number(fd.get('f')) : null,
-        ap_mm: fd.get('ap') ? Number(fd.get('ap')) : null
-      },
-
-      cooling: fd.get('cooling') || '',
-      coolingNotes: (fd.get('coolingNotes') || '').toString().trim(),
-
-      photos: {
-        tool: toolPhoto.files[0] ? { name: toolPhoto.files[0].name, size_kb: Math.round(toolPhoto.files[0].size/1024), type: toolPhoto.files[0].type } : null,
-        part: partPhoto.files[0] ? { name: partPhoto.files[0].name, size_kb: Math.round(partPhoto.files[0].size/1024), type: partPhoto.files[0].type } : null
-      },
-
-      meta: {
-        createdAt: new Date().toISOString(),
-        version: "prototype-0.4-parser"
+    chartUpload.addEventListener('change', (e) => {
+      const f = e.target.files && e.target.files[0];
+      if(!f) return;
+      if(!f.type.startsWith('image/')) {
+        setStatus('err', 'Bitte ein Bild (PNG/JPG/WebP) hochladen.');
+        return;
       }
-    };
-    return payload;
-  }
-
-  function validatePayload(p){
-    const missing = [];
-    if(!p.problemText) missing.push('Problembeschreibung');
-    if(!p.processType) missing.push('Bearbeitungsart');
-    if(!p.operation) missing.push('Operation');
-    if(!p.materialGroup) missing.push('Werkstoffgruppe');
-    if(!p.materialSpec) missing.push('Werkstoffbezeichnung');
-    if(!p.insertCode) missing.push('Wendeplatte');
-    if(p.cuttingData.vc_m_per_min === null) missing.push('vc');
-    if(p.cuttingData.f_mm_per_rev_or_tooth === null) missing.push('f');
-    if(p.cuttingData.ap_mm === null) missing.push('ap');
-    if(!p.cooling) missing.push('Kühlschmierung');
-    return missing;
-  }
-
-  // -------------------------
-  // Symptom-Erkennung
-  // -------------------------
-  const SYMPTOMS = [
-    { key:"KANTENBRUCH", label:"Kantenbruch / Ausbruch", patterns:["[ausbruch]","kantenbruch","ausbruch","bricht","bruch","chipping","ausgebrochen"] },
-    { key:"AUFBAUSCHNEIDE", label:"Aufbauschneide / adhäsiver Verschleiß", patterns:["[bue]","aufbauschneide","aufschweiß","adhäs","klebt","bue"] },
-    { key:"KOLKVERSCHLEISS", label:"Kolkverschleiß (Krater)", patterns:["[kolk]","kolk","krater","crater","kolkverschleiß"] },
-    { key:"FLANKENVERSCHLEISS", label:"Flankenverschleiß", patterns:["[vb]","flanke","flankenverschleiß","verschleißmarke","vb"] },
-    { key:"KERB", label:"Kerbverschleiß (Notch)", patterns:["[kerbe]","kerb","notch","kerbverschleiß","schulter"] },
-    { key:"RATTERN", label:"Rattern / Vibrationen", patterns:["[rattern]","rattern","vibration","schwing","chatter","quietschen","dröhnen"] },
-    { key:"OBERFLAECHE", label:"Schlechte Oberfläche / Riefen", patterns:["oberfläche","rief","wellen","rau","rattermark","schlecht","kratzer"] },
-    { key:"SPANPROBLEM", label:"Spanprobleme / Span staut", patterns:["span","verstopf","staut","spanbruch","langspan","späne"] },
-    { key:"THERMISCH", label:"Thermische Probleme (blau/funken)", patterns:["blau","funken","überhit","therm","glüh"] },
-  ];
-
-  function detectSymptoms(text){
-    const t = (text || "").toLowerCase();
-    const hits = [];
-    for(const s of SYMPTOMS){
-      if(s.patterns.some(p => t.includes(p))) hits.push(s);
-    }
-    const seen = new Set();
-    return hits.filter(h => (seen.has(h.key) ? false : (seen.add(h.key), true)));
-  }
-
-  // -------------------------
-  // Ursachen & Maßnahmen (mit Parser-Einfluss)
-  // -------------------------
-  function baseContextScores(payload){
-    const mg = payload.materialGroup;
-    const cooling = payload.cooling;
-    const vc = payload.cuttingData.vc_m_per_min;
-    const f = payload.cuttingData.f_mm_per_rev_or_tooth;
-    const ap = payload.cuttingData.ap_mm;
-    const overhang = payload.toolOverhang_mm ?? 0;
-    const insert = payload.insertParsed || null;
-    return { mg, cooling, vc, f, ap, overhang, insert };
-  }
-
-  function addCause(causes, id, title, why, scoreAdd, measures){
-    if(!causes[id]){
-      causes[id] = { id, title, why: new Set(), score: 0, measures: new Set() };
-    }
-    causes[id].score += scoreAdd;
-    if(why) causes[id].why.add(why);
-    (measures || []).forEach(m => causes[id].measures.add(m));
-  }
-  function buildAnalysis(payload){
-  const ctx = baseContextScores(payload);
-  const symptoms = detectSymptoms(payload.problemText);
-  const causes = {};
-
-  const isStainless = ctx.mg === "M";
-  const isSteel = ctx.mg === "P";
-  const isCast = ctx.mg === "K";
-  const isNonFerrous = ctx.mg === "N";
-  const isSuperAlloy = ctx.mg === "S";
-  const isHard = ctx.mg === "H";
-
-  // heuristische Schwellen
-  const lowVc = typeof ctx.vc === "number" && ctx.vc > 0 && ctx.vc < 120;
-  const highVc = typeof ctx.vc === "number" && ctx.vc > 250;
-  const highF = typeof ctx.f === "number" && ctx.f > 0.30;
-  const lowF  = typeof ctx.f === "number" && ctx.f > 0 && ctx.f < 0.08;
-  const bigAp = typeof ctx.ap === "number" && ctx.ap > 3.5;
-  const longOverhang = ctx.overhang >= 60;
-
-  const coolingWeak = ["Trocken","Unbekannt"].includes(ctx.cooling);
-
-  // Parser-Einfluss
-  const negativeInsert = ctx.insert?.negative === true; // z. B. N=0°
-  const positiveInsert = ctx.insert?.positive === true;
-
-  // Wenn negative Platte: mehr Kräfte → Steifigkeit/Last wird wichtiger
-  if(negativeInsert){
-    addCause(
-      causes,
-      "NEG_PLATTE",
-      "Negative Platte (0°): höhere Kräfte → Steifigkeit entscheidend",
-      "ISO-Code deutet auf negative Schneide (0°) hin.",
-      14,
-      [
-        "Steifigkeit priorisieren: Überstand reduzieren, Spannung verbessern",
-        "Bei Rattern/Bruch: Parameter anpassen (ap/f runter) oder positive Geometrie testen"
-      ]
-    );
-  }
-
-  // -------------------------
-  // Symptom-driven rules
-  // -------------------------
-  for(const s of symptoms){
-
-    if(s.key === "AUFBAUSCHNEIDE"){
-      addCause(
-        causes,
-        "VC_ZU_NIEDRIG",
-        "Schnittgeschwindigkeit zu niedrig (adhäsiver Verschleiß)",
-        "Aufbauschneide korreliert oft mit zu niedriger vc.",
-        lowVc ? 35 : 22,
-        [
-          "vc moderat erhöhen (z. B. +15–30%) und beobachten",
-          "Geometrie/Spanbrecher für adhäsiven Verschleiß wählen (schärfer, geeignete Spanleitstufe)",
-          "KSS/Schmierung verbessern (Ziel: gleitende Schneide, weniger Aufschweißungen)"
-        ]
-      );
-
-      if(isStainless){
-        addCause(
-          causes,
-          "GEOMETRIE_SCHARF",
-          "Geometrie zu stumpf / falscher Spanbrecher für Edelstahl",
-          "Edelstahl neigt zu Aufschweißung – schärfere Geometrie hilft.",
-          24,
-          [
-            "Schärfere Geometrie/Spanbrecher (Edelstahl-geeignet) einsetzen",
-            "f leicht erhöhen, falls Span nicht bricht (kontrolliert)"
-          ]
-        );
-      }
-
-      if(ctx.cooling === "Emulsion (Standard)" || ctx.cooling === "Unbekannt"){
-        addCause(
-          causes,
-          "KSS_ZU_WENIG",
-          "Kühlschmierung trifft Schneide nicht optimal",
-          "Aufbauschneide wird schlimmer bei schlechter Schmierung/Strahlführung.",
-          18,
-          [
-            "Kühlstrahl gezielt auf Spanwurzel/Schneide ausrichten",
-            "Bei Bedarf Hochdruckkühlung testen (Spanabfuhr & Temperatur)"
-          ]
-        );
-      }
-    }
-
-    if(s.key === "KANTENBRUCH"){
-      addCause(
-        causes,
-        "ZAEHIGKEIT_PLATTE",
-        "Plattensorte zu spröde / zu hart für Prozess",
-        "Kantenbruch deutet oft auf zu geringe Zähigkeit oder zu harte Sorte hin.",
-        28,
-        [
-          "Zähere Sorte wählen (mehr Zähigkeit, ggf. andere Beschichtung)",
-          "Eckenradius / Schneidkantenpräparation prüfen (Kantenstabilität)"
-        ]
-      );
-
-      // negative Platte verstärkt Last-/Steifigkeitsthemen
-      if(highF || bigAp || negativeInsert){
-        addCause(
-          causes,
-          "MECH_LAST",
-          "Mechanische Last zu hoch (f/ap/Kräfte)",
-          "Hohe Belastung begünstigt Ausbrüche.",
-          (highF || bigAp) ? 26 : 18,
-          [
-            "f reduzieren (z. B. -10–20%) oder ap reduzieren (z. B. -10–25%)",
-            "Schrupp-/Schlichtaufteilung prüfen (2-stufig statt zu viel auf einmal)"
-          ]
-        );
-      }
-
-      if(longOverhang || negativeInsert){
-        addCause(
-          causes,
-          "STEIFIGKEIT",
-          "Zu geringe Steifigkeit (Auskragung/Spannung)",
-          "Schwingungen/Schläge verursachen Mikroausbrüche.",
-          longOverhang ? 26 : 18,
-          [
-            "Überstand reduzieren (so kurz wie möglich)",
-            "Spannung/Abstützung verbessern (Reitstock/Lünette/Spannmittel)"
-          ]
-        );
-      }
-
-      if(isHard){
-        addCause(
-          causes,
-          "HARTBEARBEITUNG",
-          "H-Bearbeitung: falsche Strategie/Sorte",
-          "Bei ISO H sind Stabilität & richtige Schneidstoffwahl entscheidend.",
-          18,
-          [
-            "Für Hartbearbeitung geeignete Sorte/CBN/PCD (falls passend) prüfen",
-            "Kontinuierlicher Schnitt bevorzugen, Eintritt/Unterbrechung vermeiden"
-          ]
-        );
-      }
-    }
-
-    if(s.key === "RATTERN"){
-      addCause(
-        causes,
-        "STEIFIGKEIT",
-        "Zu geringe Steifigkeit (Auskragung/Spannung)",
-        "Rattern ist fast immer Steifigkeit/Dynamik/Parameter.",
-        (negativeInsert ? 38 : 34),
-        [
-          "Überstand reduzieren, steifere Halter/Adapter nutzen",
-          "Spannung verbessern (kurz, kräftig, Abstützung)"
-        ]
-      );
-
-      addCause(
-        causes,
-        "PARAM_CHATTER",
-        "Schnittdaten im instabilen Bereich (Rattern)",
-        "Bestimmte f/vc Kombinationen treffen Resonanzen.",
-        24,
-        [
-          "vc deutlich verändern (z. B. ±20%) statt minimal zu drehen",
-          "f leicht anpassen (raus aus Resonanz), ggf. ap reduzieren"
-        ]
-      );
-
-      if(negativeInsert){
-        addCause(
-          causes,
-          "POS_GEOMETRIE_TEST",
-          "Bei Schwingung: positive Geometrie testen",
-          "Positive Schneide reduziert Kräfte und kann Stabilität verbessern.",
-          14,
-          [
-            "Wenn möglich: positive Geometrie/Platte (z. B. 7°/11°) testen",
-            "Alternativ: Schnitttiefe ap reduzieren und vc variieren"
-          ]
-        );
-      }
-    }
-
-    if(s.key === "KOLKVERSCHLEISS"){
-      addCause(
-        causes,
-        "VC_ZU_HOCH",
-        "Schnittgeschwindigkeit zu hoch (thermischer Kolk)",
-        "Kolk/Crater steigt oft mit Temperatur (vc).",
-        highVc ? 34 : 22,
-        [
-          "vc reduzieren (z. B. -10–25%)",
-          "Thermisch stabilere Sorte/Beschichtung wählen"
-        ]
-      );
-
-      if(isSuperAlloy || isStainless){
-        addCause(
-          causes,
-          "SORTE_THERM",
-          "Thermische Stabilität/Sorte unpassend",
-          "ISO S/M: Wärme in der Schneide – Sorte muss passen.",
-          20,
-          [
-            "Sorte für ISO S/M (warmfest/oxidationsbeständig) einsetzen",
-            "Hochdruckkühlung (Spanabfuhr) prüfen"
-          ]
-        );
-      }
-    }
-
-    if(s.key === "FLANKENVERSCHLEISS"){
-      addCause(
-        causes,
-        "ABRASSIV",
-        "Abrasiver Verschleiß (Material/Skala/Sand/Guss)",
-        "Flankenverschleiß oft abrasiv getrieben.",
-        18,
-        [
-          "Härtere/verschleißfestere Sorte wählen (Abrasion)",
-          "Schnittkante/Radius passend wählen, um Flanke zu entlasten"
-        ]
-      );
-
-      if(isCast){
-        addCause(
-          causes,
-          "GUSS_STAUB",
-          "Guss: abrasive Partikel & unterbrochener Schnitt",
-          "Guss ist abrasiv, Kantenfestigkeit wichtig.",
-          16,
-          [
-            "Guss-geeignete Sorte/Geometrie einsetzen",
-            "Kühlung meist sekundär – Fokus auf Sorte/Geometrie"
-          ]
-        );
-      }
-    }
-
-    if(s.key === "SPANPROBLEM"){
-      addCause(
-        causes,
-        "SPANBRECHER",
-        "Spanbrecher/Geometrie unpassend (Span staut)",
-        "Spanstau führt zu Oberflächen- und Kantenproblemen.",
-        26,
-        [
-          "Spanbrecher an f/ap anpassen (für den Arbeitsbereich)",
-          "f leicht erhöhen (wenn möglich) zur Spanformung",
-          "Kühlstrahl zur Spanabfuhr ausrichten"
-        ]
-      );
-    }
-
-    if(s.key === "OBERFLAECHE"){
-      addCause(
-        causes,
-        "SCHNEIDKANTE",
-        "Schneidkante/Radius/Geometrie passt nicht zur Schlichtanforderung",
-        "Oberfläche hängt stark an Kantenradius + Stabilität.",
-        18,
-        [
-          "Für Schlichten: geeigneten Eckenradius/Geometrie wählen",
-          "Rundlauf/Anlagefläche prüfen (Wendeplatte sitzt sauber?)"
-        ]
-      );
-
-      if(lowF){
-        addCause(
-          causes,
-          "F_ZU_NIEDRIG",
-          "Vorschub zu niedrig (reiben statt schneiden)",
-          "Zu niedriger f kann Reiben/Schmieren erzeugen.",
-          16,
-          [
-            "f moderat erhöhen (kontrolliert), um Schneiden statt Reiben zu erreichen"
-          ]
-        );
-      }
-    }
-
-    if(s.key === "THERMISCH"){
-      addCause(
-        causes,
-        "THERM_LAST",
-        "Temperatur zu hoch (Parameter/Kühlung)",
-        "Blaufärbung/Funken sind starke Temperaturindikatoren.",
-        28,
-        [
-          "vc reduzieren oder Schnittzeit pro Eingriff reduzieren",
-          "Kühlstrategie verbessern (Hochdruck, Strahlführung)"
-        ]
-      );
-    }
-
-    if(s.key === "KERB"){
-      addCause(
-        causes,
-        "KERB_CAUSE",
-        "Kerbverschleiß: Eintrittslinie/Schulter/Skala/Wechselhärte",
-        "Kerben entstehen oft an Materialkante/Unterbrechung/Skala.",
-        26,
-        [
-          "Eintritt/Schulter-Strategie prüfen (kontinuierlicher Schnitt, Anfahrwinkel)",
-          "Sorte/Geometrie mit hoher Kerbverschleißbeständigkeit wählen",
-          "vc/f so anpassen, dass keine „Reibzone“ an Schulter entsteht"
-        ]
-      );
-    }
-  }
-
-  // -------------------------
-  // Context-only rules (auch ohne Treffer im Text)
-  // -------------------------
-  if(payload.processType === "Stechen/Nuten" || payload.operation === "Einstechen/Abstechen"){
-    addCause(
-      causes,
-      "STECHEN_RISIKO",
-      "Stechen/Abstechen: hohe Prozesssensitivität",
-      "Diese Operationen kippen schnell bei Span/KSS/Steifigkeit.",
-      16,
-      [
-        "Kühlung/Spanabfuhr priorisieren (gezielt, ggf. Hochdruck)",
-        "Ein- und Ausfahrstrategie prüfen, Werkzeugausrichtung kontrollieren"
-      ]
-    );
-  }
-
-  if(coolingWeak){
-    addCause(
-      causes,
-      "KSS_ZU_WENIG",
-      "Kühlschmierung unzureichend (trocken/unklar)",
-      "Viele Probleme entspannen sich durch gute KSS-Führung.",
-      12,
-      [
-        "KSS-Strahlführung prüfen und auf Schneide ausrichten",
-        "Bei Problemen: Hochdruck/MQL-Tests je nach Werkstoff"
-      ]
-    );
-  }
-
-  // ISO-Gruppen-Hinweise (leicht gewichtet)
-  if(isStainless){
-    addCause(
-      causes,
-      "ISO_M_HINT",
-      "ISO M (Edelstahl): zäh/aufschweißend – scharfe Geometrie + KSS",
-      "Edelstahl braucht häufig scharfe Schneiden und saubere Spanabfuhr.",
-      8,
-      [
-        "Für ISO M: scharfe Geometrie + geeigneter Spanbrecher verwenden",
-        "Kühlstrahlführung/Spanabfuhr priorisieren"
-      ]
-    );
-  }
-  if(isSuperAlloy){
-    addCause(
-      causes,
-      "ISO_S_HINT",
-      "ISO S: Wärme in der Schneide – thermische Stabilität wichtig",
-      "Superlegierungen bringen Wärme in Schneide → vc konservativ + passende Sorte.",
-      8,
-      [
-        "Thermisch passende Sorte wählen, vc konservativer",
-        "Hochdruckkühlung/Spanabfuhr verbessern"
-      ]
-    );
-  }
-  if(isCast){
-    addCause(
-      causes,
-      "ISO_K_HINT",
-      "ISO K (Guss): abrasiv/unterbrochen – Kantenfestigkeit",
-      "Guss belastet Kante abrasiv und stoßartig.",
-      6,
-      [
-        "Abrasion-feste Sorte/Geometrie wählen",
-        "Kantenfestigkeit priorisieren (Eckenradius, stabile Geometrie)"
-      ]
-    );
-  }
-  if(isNonFerrous){
-    addCause(
-      causes,
-      "ISO_N_HINT",
-      "ISO N: klebt/schmiert – sehr scharfe Schneide, ggf. Schmierung",
-      "NE-Metalle profitieren oft von polierten Spanflächen.",
-      6,
-      [
-        "Sehr scharfe Geometrie, polierte Spanfläche prüfen",
-        "Schmierung (MQL/Öl) je nach Prozess testen"
-      ]
-    );
-  }
-  if(isHard){
-    addCause(
-      causes,
-      "ISO_H_HINT",
-      "ISO H: harte Werkstoffe – Strategie & Schneidstoff entscheidend",
-      "Bei Hartbearbeitung sind Schneidstoff und Stabilität zentral.",
-      8,
-      [
-        "Hartbearbeitungs-Sorte/CBN prüfen (falls passend)",
-        "Unterbrechung/Schläge vermeiden, stabile Bedingungen schaffen"
-      ]
-    );
-  }
-
-  if(positiveInsert){
-    addCause(
-      causes,
-      "POS_HINT",
-      "Positive Geometrie: geringere Kräfte, oft bessere Oberfläche",
-      "ISO-Code deutet auf positiven Freiwinkel hin.",
-      6,
-      [
-        "Bei Lastproblemen: positive Geometrie beibehalten",
-        "Bei Kantenbruch trotz positiv: Sorte/Zähigkeit prüfen"
-      ]
-    );
-  }
-
-  // -------------------------
-  // Build sorted cause list
-  // -------------------------
-  const causeArr = Object.values(causes)
-    .map(c => ({...c, why:Array.from(c.why), measures:Array.from(c.measures)}))
-    .sort((a,b)=>b.score-a.score);
-
-  // -------------------------
-  // Pareto Buckets
-  // -------------------------
-  const totalScore = causeArr.reduce((s,c)=>s+c.score,0) || 1;
-  let cum = 0;
-
-  const topMeasures = [];
-  const secMeasures = [];
-  const edgeMeasures = [];
-  const seen = new Set();
-
-  function pushUnique(arr, m){
-    if(!m) return;
-    const key = m.trim().toLowerCase();
-    if(seen.has(key)) return;
-    seen.add(key);
-    arr.push(m);
-  }
-
-  for(const c of causeArr){
-    const ratio = cum/totalScore;
-    const bucket = ratio < 0.80 ? "TOP" : (ratio < 0.95 ? "SEC" : "EDGE");
-    for(const m of c.measures){
-      if(bucket === "TOP") pushUnique(topMeasures, m);
-      else if(bucket === "SEC") pushUnique(secMeasures, m);
-      else pushUnique(edgeMeasures, m);
-    }
-    cum += c.score;
-  }
-
-  if(topMeasures.length === 0 && causeArr[0]?.measures?.length){
-    causeArr[0].measures.forEach(m => pushUnique(topMeasures, m));
-  }
-
-  return {
-    symptoms,
-    causes: causeArr,
-    measures: { top: topMeasures, secondary: secMeasures, edge: edgeMeasures }
-  };
-}
-
-function renderResults(payload, analysis){
-  resultsBox.style.display = "block";
-
-  const photoInfo = [];
-  if(payload.photos.tool) photoInfo.push("Werkzeugfoto ✅");
-  if(payload.photos.part) photoInfo.push("Bauteilfoto ✅");
-
-  const insertHint =
-    payload.insertParsed?.negative ? "• Platte: negativ (0°) → höhere Kräfte" :
-    payload.insertParsed?.positive ? "• Platte: positiv → geringere Kräfte" : "";
-
-  resultsMeta.textContent =
-    `Material: ISO ${payload.materialGroup} (${payload.materialSpec}) • Prozess: ${payload.processType}/${payload.operation} • vc=${payload.cuttingData.vc_m_per_min} • f=${payload.cuttingData.f_mm_per_rev_or_tooth} • ap=${payload.cuttingData.ap_mm} ` +
-    (insertHint ? insertHint + " " : "") +
-    (photoInfo.length ? `• ${photoInfo.join(" • ")}` : "");
-
-  symptomChips.innerHTML = "";
-  const sym = analysis.symptoms.length
-    ? analysis.symptoms
-    : [{label:"Keine klaren Keywords erkannt (nutze Ursachen-Logik aus Daten).", key:"NONE"}];
-
-  for(const s of sym){
-    const el = document.createElement("div");
-    el.className = "chip " + (s.key === "KANTENBRUCH" ? "bad" : (s.key === "RATTERN" ? "warn" : "ok"));
-    el.textContent = s.label;
-    symptomChips.appendChild(el);
-  }
-
-  causeList.innerHTML = "";
-  if(!analysis.causes.length){
-    causeList.innerHTML = `<div class="muted">Noch keine Ursachen abgeleitet.</div>`;
-  } else {
-    analysis.causes.slice(0, 6).forEach(c => {
-      const row = document.createElement("div");
-      row.className = "scoreRow";
-      const why = c.why.length ? c.why[0] : "";
-      row.innerHTML = `<div><b>${c.title}</b><div class="muted" style="margin-top:2px">${why}</div></div><span>Score: ${c.score}</span>`;
-      causeList.appendChild(row);
+      showImage(f);
+      setStatus('', 'Bild geladen. Du kannst jetzt die Analyse starten.');
     });
-  }
 
-  function fillList(ul, items){
-    ul.innerHTML = "";
-    if(!items.length){
-      const li = document.createElement("li");
-      li.className = "muted";
-      li.textContent = "—";
-      ul.appendChild(li);
-      return;
-    }
-    items.slice(0, 7).forEach(m => {
-      const li = document.createElement("li");
-      li.textContent = m;
-      ul.appendChild(li);
+    // Drag & drop
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = 'rgba(106,228,255,.55)';
     });
-  }
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.style.borderColor = 'rgba(255,255,255,.20)';
+    });
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = 'rgba(255,255,255,.20)';
+      const f = e.dataTransfer.files && e.dataTransfer.files[0];
+      if(!f) return;
+      if(!f.type.startsWith('image/')) {
+        setStatus('err', 'Bitte ein Bild (PNG/JPG/WebP) droppen.');
+        return;
+      }
+      showImage(f);
+      setStatus('', 'Bild geladen (Drag & Drop). Analyse starten.');
+    });
 
-  fillList(measuresTop, analysis.measures.top);
-  fillList(measuresSecondary, analysis.measures.secondary);
-  fillList(measuresEdge, analysis.measures.edge);
-}
+    removeImg.addEventListener('click', () => {
+      clearImage();
+      setStatus('', 'Bild entfernt. Upload ein neues Chart-Bild.');
+      outBox.style.display = 'none';
+    });
 
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
+    function payload(){
+      return {
+        timeframe: timeframe.value,
+        market: market.value,
+        asset: asset.value.trim(),
+        weeklyBiasOn,
+        notes: notes.value.trim(),
+        image: imageFile ? { name: imageFile.name, size_kb: Math.round(imageFile.size/1024), type: imageFile.type } : null,
+        meta: { createdAt: new Date().toISOString(), version: "ta-ui-1.0" }
+      };
+    }
 
-  const payload = collectFormData();
-  const missing = validatePayload(payload);
+    function renderChips(p){
+      tagChips.innerHTML = '';
+      const chips = [
+        {text: p.timeframe, tone:'ok'},
+        {text: p.market, tone:'ok'},
+        {text: p.asset ? p.asset : 'No ticker', tone: p.asset ? 'ok' : 'warn'},
+        {text: p.weeklyBiasOn ? 'Weekly bias ON' : 'Weekly bias OFF', tone: p.weeklyBiasOn ? 'ok' : 'warn'}
+      ];
+      for(const c of chips){
+        const el = document.createElement('div');
+        el.className = 'chip ' + c.tone;
+        el.textContent = c.text;
+        tagChips.appendChild(el);
+      }
+    }
 
-  payloadPreview.textContent = JSON.stringify(payload, null, 2);
+    // Placeholder report (bis wir die Engine anschließen)
+    function placeholderReport(p){
+      const tf = p.timeframe;
+      const bias = p.weeklyBiasOn ? "Weekly Bias wird priorisiert." : "Weekly Bias ist deaktiviert.";
+      outPhase.textContent = "Unklar (Template) – bitte Engine anschließen.";
+      outTrend.textContent = `${tf}: Trend wird anhand Struktur/MA/RSI bewertet. ${bias}`;
 
-  if(missing.length){
-    setStatus('err', `Bitte ergänzen: ${missing.join(', ')}.`);
-    resultsBox.style.display = "none";
-    return;
-  }
+      outArgs.innerHTML = '';
+      [
+        "Marktstruktur prüfen: HH/HL vs LH/LL (Trend oder Range?)",
+        "Key Levels: Support/Resistance-Zonen definieren",
+        "Trendfilter: 200 MA (darüber bullisch, darunter bearisch)",
+        "RSI: >50 bullisch / <50 bearisch, Divergenzen beachten",
+        "MACD/Volumen: Momentum & Bestätigung checken"
+      ].forEach(t => {
+        const li = document.createElement('li');
+        li.textContent = t;
+        outArgs.appendChild(li);
+      });
 
-  const analysis = buildAnalysis(payload);
-  renderResults(payload, analysis);
+      outScenarioA.textContent = "Szenario A (60–70%): Fortsetzung im Trend nach Pullback an Support-Zone (wenn Struktur intakt).";
+      outScenarioB.textContent = "Szenario B (30–40%): Range/Umkehr bei Bruch der letzten Higher-Low / Support-Zone (Invalidate).";
+      outConclusion.textContent = "Fazit (Template): Bias folgt der Struktur. Invalidation = klar definierter Level-Bruch (Support/Trendline/MA).";
+    }
 
-  setStatus('ok', 'Analyse erzeugt ✅ (V2: inkl. ISO-Code-Parser).');
-});
+    runBtn.addEventListener('click', () => {
+      const p = payload();
+      payloadBox.style.display = 'block';
+      payloadBox.textContent = JSON.stringify(p, null, 2);
 
-document.getElementById('resetBtn').addEventListener('click', () => {
-  form.reset();
-  payloadPreview.textContent = '';
-  resultsBox.style.display = "none";
-  setStatus('', 'Bereit. Bitte Felder ausfüllen und „Analyse starten“ klicken.');
-  fileToPreview(null, toolPreview, toolPreviewCap);
-  fileToPreview(null, partPreview, partPreviewCap);
+      if(!p.image){
+        setStatus('err', 'Bitte zuerst ein Chart-Bild hochladen.');
+        outBox.style.display = 'none';
+        return;
+      }
 
-  wearGrid.querySelectorAll(".wearCard.selected").forEach(b => b.classList.remove("selected"));
-  renderInsertParse();
-});
+      // UI ok – Report anzeigen (Platzhalter)
+      renderChips(p);
+      placeholderReport(p);
+      outBox.style.display = 'block';
+      setStatus('ok', 'Report erstellt (UI-V1). Nächster Schritt: Analyse-Engine anschließen.');
+    });
 
-document.getElementById('fillDemo').addEventListener('click', () => {
-  problemTextEl.value =
-    "Kantenbruch nach ca. 3 Minuten im Schruppen. Oberfläche mit Riefen, gelegentlich Rattern. [BUE] Aufbauschneide. Span teils lang, teils verstopft. Kühlung Standard-Emulsion.";
+    demoBtn.addEventListener('click', () => {
+      timeframe.value = "Weekly";
+      market.value = "Forex";
+      asset.value = "EURUSD";
+      setSwitch(true);
+      notes.value = "Ich sehe eine große Weekly-Range. Preis nahe Resistance, RSI ~55, Volumen bei Breakout war schwach. Bitte Bias & Szenarien definieren.";
+      setStatus('', 'Demo gefüllt. Jetzt ein Chart-Bild hochladen und Analyse starten.');
+    });
 
-  // Wear cards passend markieren
-  wearGrid.querySelectorAll(".wearCard").forEach(b => {
-    const tag = (b.getAttribute("data-tag") || "").toLowerCase();
-    b.classList.toggle("selected", problemTextEl.value.toLowerCase().includes(tag));
-  });
+    resetBtn.addEventListener('click', () => {
+      timeframe.value = "Weekly";
+      market.value = "Aktie";
+      asset.value = "";
+      notes.value = "";
+      setSwitch(true);
+      clearImage();
+      outBox.style.display = 'none';
+      payloadBox.style.display = 'none';
+      payloadBox.textContent = '';
+      setStatus('', 'Reset. Upload ein Chart-Bild und starte die Analyse.');
+    });
 
-  document.getElementById('processType').value = "Drehen";
-  document.getElementById('operation').value = "Schruppen";
-  document.getElementById('diameter').value = "62";
-  document.getElementById('materialGroup').value = "M";
-  document.getElementById('materialSpec').value = "1.4301 / X5CrNi18-10";
-  document.getElementById('machineBrand').value = "DMG Mori (Beispiel)";
-
-  document.getElementById('insertCode').value = "CMNG 1504-08-PM05";
-  renderInsertParse();
-
-  document.getElementById('holderCode').value = "PCLNR 2525M12";
-  document.getElementById('toolOverhang').value = "65";
-  document.getElementById('clamping').value = "Dreibackenfutter + Reitstock";
-  document.getElementById('vc').value = "110";
-  document.getElementById('f').value = "0.28";
-  document.getElementById('ap').value = "3.8";
-  document.getElementById('cooling').value = "Emulsion (Standard)";
-  document.getElementById('coolingNotes').value = "Kühlstrahl trifft Schneide nicht immer sauber.";
-
-  setStatus('', 'Demo-Daten eingefügt. Jetzt „Analyse starten“.');
-});
-
-// initial
-renderInsertParse();
-  
+    // init
+    setSwitch(true);
+  </script>
+</body>
+</html>
