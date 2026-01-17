@@ -3,72 +3,51 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TA Desk – Chart Review (Weekly & Day)</title>
+  <title>Haushaltskasse – Familie Tuncay</title>
   <style>
     :root{
       --bg:#0b1020;
-      --panel:#111a33;
-      --panel2:#0f1730;
+      --card:#111a33;
       --text:#eaf0ff;
       --muted:#97a3c6;
       --border:rgba(255,255,255,.10);
-      --accent:#6ae4ff;
-      --accent2:#a78bfa;
       --ok:#6aff9b;
-      --warn:#ffd26a;
       --bad:#ff6a6a;
-      --shadow: 0 12px 34px rgba(0,0,0,.45);
+      --warn:#ffd26a;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
       background:
-        radial-gradient(1200px 600px at 18% 0%, rgba(106,228,255,.18), transparent 60%),
-        radial-gradient(900px 520px at 85% 10%, rgba(167,139,250,.18), transparent 60%),
+        radial-gradient(1200px 600px at 18% 0%, rgba(106,228,255,.16), transparent 60%),
+        radial-gradient(900px 520px at 85% 10%, rgba(167,139,250,.16), transparent 60%),
         var(--bg);
       color:var(--text);
     }
-    .wrap{max-width:1180px; margin:0 auto; padding:22px 18px 42px}
-    header{
-      display:flex; align-items:flex-end; justify-content:space-between; gap:16px;
-      padding:8px 0 18px;
-    }
-    .title h1{margin:0; font-size:22px; letter-spacing:.2px}
-    .title p{margin:6px 0 0; color:var(--muted); line-height:1.35}
-    .badge{
-      display:inline-flex; align-items:center; gap:8px;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.05);
-      border-radius:999px;
-      padding:8px 10px;
-      color:var(--muted);
-      font-size:12px;
-      white-space:nowrap;
-    }
-    .grid{
-      display:grid; gap:14px;
-    }
-    @media (min-width: 980px){
-      .grid{grid-template-columns: 1.15fr .85fr;}
+    .wrap{max-width:980px; margin:0 auto; padding:22px 18px 42px}
+    header{padding:8px 0 14px}
+    h1{margin:0; font-size:22px}
+    .sub{margin:8px 0 0; color:var(--muted); line-height:1.35; font-size:13px}
+    .grid{display:grid; gap:14px}
+    @media (min-width: 900px){
+      .grid{grid-template-columns: 1.2fr .8fr}
     }
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid var(--border);
       border-radius:16px;
       padding:16px;
-      box-shadow: var(--shadow);
+      box-shadow: 0 12px 34px rgba(0,0,0,.45);
       backdrop-filter: blur(10px);
     }
-    .card h2{margin:0 0 10px; font-size:14px; letter-spacing:.2px}
-    .sub{color:var(--muted); font-size:12px; line-height:1.35}
+    .card h2{margin:0 0 10px; font-size:15px}
     .row{display:grid; gap:10px}
-    @media (min-width: 680px){
-      .row.two{grid-template-columns: 1fr 1fr;}
-      .row.three{grid-template-columns: 1fr 1fr 1fr;}
+    @media (min-width: 650px){
+      .row.two{grid-template-columns: 1fr 1fr}
     }
     label{display:block; font-size:12px; color:var(--muted); margin:6px 0 6px}
-    input, select, textarea{
+    input{
       width:100%;
       padding:10px 11px;
       border-radius:12px;
@@ -77,530 +56,307 @@
       color: var(--text);
       outline:none;
     }
-    textarea{min-height:92px; resize:vertical}
-    input::placeholder, textarea::placeholder{color: rgba(234,240,255,.45)}
+    input::placeholder{color: rgba(234,240,255,.45)}
+    .hint{font-size:12px; color:var(--muted); margin-top:6px; line-height:1.35}
     hr{border:none; border-top:1px solid var(--border); margin:14px 0}
-
-    /* Upload */
-    .drop{
-      border:1px dashed rgba(255,255,255,.20);
-      background: rgba(0,0,0,.18);
-      border-radius:16px;
-      padding:14px;
-      display:flex;
-      gap:12px;
-      align-items:center;
-      justify-content:space-between;
-    }
-    .drop strong{display:block; font-size:13px}
-    .drop small{display:block; color:var(--muted); margin-top:4px; line-height:1.3}
-    .drop .left{display:flex; align-items:center; gap:12px}
-    .ico{
-      width:46px; height:46px; border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.04);
-      display:grid; place-items:center;
-      flex:0 0 46px;
-    }
-    .ico svg{width:24px; height:24px; opacity:.95}
-    .btn{
+    .actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px}
+    button{
       cursor:pointer;
       border:1px solid var(--border);
-      background: rgba(106,228,255,.12);
-      color:var(--text);
-      border-radius:12px;
       padding:10px 12px;
+      border-radius:12px;
+      background: rgba(255,255,255,.05);
+      color: var(--text);
       font-weight:700;
       font-size:12px;
     }
-    .btn.primary{
-      background: linear-gradient(90deg, rgba(106,228,255,.22), rgba(167,139,250,.22));
-      border-color: rgba(106,228,255,.35);
-    }
-    .btn.ghost{background: rgba(255,255,255,.05)}
-    .btn:active{transform: translateY(1px)}
-    .actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px}
-
-    .preview{
-      margin-top:12px;
-      border:1px solid var(--border);
-      background: rgba(0,0,0,.18);
-      border-radius:16px;
-      overflow:hidden;
-    }
-    .previewTop{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding:10px 12px;
-      border-bottom:1px solid var(--border);
-      background: rgba(255,255,255,.03);
-    }
-    .previewTop .meta{color:var(--muted); font-size:12px}
-    .preview img{
-      width:100%;
-      height:auto;
-      display:block;
-      max-height:480px;
-      object-fit:contain;
-      background: rgba(0,0,0,.25);
-    }
-
-    /* Toggle */
-    .toggleRow{display:flex; align-items:center; justify-content:space-between; gap:10px}
-    .toggle{
-      display:flex; align-items:center; gap:10px;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.04);
-    }
-    .switch{
-      position:relative;
-      width:44px; height:24px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.25);
-      cursor:pointer;
-      flex:0 0 44px;
-    }
-    .switch::after{
-      content:"";
-      position:absolute; top:3px; left:3px;
-      width:18px; height:18px;
-      border-radius:999px;
-      background: rgba(255,255,255,.70);
-      transition: .18s ease;
-    }
-    .switch.on{
-      background: rgba(106,255,155,.18);
+    button.primary{
+      background: linear-gradient(90deg, rgba(106,255,155,.18), rgba(106,228,255,.18));
       border-color: rgba(106,255,155,.35);
     }
-    .switch.on::after{left:23px; background: rgba(106,255,155,.90)}
-    .toggle .tText b{display:block; font-size:12px}
-    .toggle .tText span{display:block; font-size:11px; color:var(--muted); margin-top:2px}
 
-    /* Output */
-    .status{
-      margin-top:12px;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid var(--border);
-      background: rgba(0,0,0,.18);
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.35;
-    }
-    .status.ok{border-color: rgba(106,255,155,.35); color: rgba(106,255,155,.95)}
-    .status.err{border-color: rgba(255,106,106,.35); color: rgba(255,106,106,.95)}
-    .chips{display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 0}
-    .chip{
-      font-size:12px;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.05);
-      color: rgba(234,240,255,.92);
-    }
-    .chip.ok{border-color: rgba(106,255,155,.35)}
-    .chip.warn{border-color: rgba(255,210,106,.35)}
-    .chip.bad{border-color: rgba(255,106,106,.35)}
-    .outBox{
-      margin-top:12px;
+    .summaryBox{
       border:1px solid var(--border);
       background: rgba(0,0,0,.18);
       border-radius:16px;
       padding:14px;
     }
-    .outBox h3{margin:0 0 8px; font-size:14px}
-    .outGrid{display:grid; gap:12px}
-    @media (min-width: 680px){
-      .outGrid{grid-template-columns: 1fr 1fr;}
+    .kpi{display:flex; justify-content:space-between; gap:10px; padding:8px 10px;
+      border:1px solid var(--border); border-radius:12px; background: rgba(255,255,255,.04); margin-top:8px}
+    .kpi b{font-size:12px}
+    .kpi span{font-size:12px; color:var(--muted)}
+    .big{
+      margin-top:10px;
+      font-size:18px;
+      font-weight:800;
     }
-    .kv{
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.04);
-      border-radius:14px;
-      padding:12px;
-    }
-    .kv b{display:block; font-size:12px}
-    .kv p{margin:6px 0 0; color:var(--muted); font-size:12px; line-height:1.35}
-    ul{margin:8px 0 0; padding-left:18px; color:rgba(234,240,255,.92); line-height:1.45}
-    .small{font-size:11px; color:var(--muted)}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;}
-    pre{
-      white-space:pre-wrap;
-      word-break:break-word;
-      margin:12px 0 0;
-      padding:12px;
-      border-radius:14px;
-      border:1px solid var(--border);
-      background: rgba(0,0,0,.25);
-      color: rgba(234,240,255,.92);
-      font-size:12px;
-    }
+    .green{color:var(--ok)}
+    .red{color:var(--bad)}
+    .small{font-size:11px; color:var(--muted); margin-top:8px; line-height:1.35}
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <header>
-      <div class="title">
-        <h1>TA Desk – Chart Review</h1>
-        <p>Professionelles Technical-Analysis Template (Weekly Bias + Day Execution). Upload → Analyse-Report (strukturierter Output).</p>
-      </div>
-      <div class="badge">⚡ Private Tool • v1 UI</div>
+      <h1>🏠 Haushaltskasse – Familie Tuncay</h1>
+      <p class="sub">
+        Monats-Übersicht: Einnahmen eintragen → Fixkosten + Sparen + Investieren + Kredite werden automatisch abgezogen → Restbetrag am Monatsende.
+      </p>
     </header>
 
     <div class="grid">
-      <!-- LEFT -->
+      <!-- LEFT: Inputs -->
       <section class="card">
-        <h2>Input</h2>
-        <div class="sub">Upload deinen Chart (Screenshot). Wähle Timeframe & Market, optional Notizen. Dann „Analyse starten“.</div>
+        <h2>1) Einnahmen</h2>
+        <div class="row two">
+          <div>
+            <label for="salary">Gehalt (Netto) €</label>
+            <input id="salary" type="number" min="0" step="0.01" value="0" />
+          </div>
+          <div>
+            <label for="otherIncome">Sonstige Einnahmen € (optional)</label>
+            <input id="otherIncome" type="number" min="0" step="0.01" value="0" />
+          </div>
+        </div>
+        <div class="hint">Wenn ihr später 2 Gehälter wollt, bauen wir das als extra Felder rein.</div>
 
-        <div style="margin-top:12px" class="drop" id="dropZone">
-          <div class="left">
-            <div class="ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M12 16V8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M8.5 11.5 12 8l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M5 16.5C3.4 16.2 2 14.7 2 12.9 2 11 3.5 9.5 5.4 9.4 6.1 7.4 7.9 6 10 6c2 0 3.8 1.3 4.5 3.1 1.9.1 3.5 1.7 3.5 3.7 0 1.9-1.4 3.4-3.2 3.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <div>
-              <strong>Chart hochladen</strong>
-              <small>Drag & Drop oder Datei auswählen (PNG/JPG). TradingView/MT4/… Screenshot ist perfekt.</small>
-            </div>
+        <hr>
+
+        <h2>2) Fixkosten & Haushalt (Ausgaben)</h2>
+        <div class="row two">
+          <div>
+            <label>Miete / Kreditrate €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
+          <div>
+            <label>Strom €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
           </div>
 
           <div>
-            <label class="btn" for="chartUpload">Datei wählen</label>
-            <input id="chartUpload" type="file" accept="image/*" style="display:none" />
+            <label>Internet €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
           </div>
-        </div>
+          <div>
+            <label>Mobilfunk €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
 
-        <div class="preview" id="previewBox" style="display:none">
-          <div class="previewTop">
-            <div class="meta" id="imgMeta">—</div>
-            <button class="btn ghost" type="button" id="removeImg">Bild entfernen</button>
+          <div>
+            <label>Heizung / Gas €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
           </div>
-          <img id="previewImg" alt="Chart Vorschau" />
+          <div>
+            <label>Wasser / Abwasser €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
+
+          <div>
+            <label>Rundfunkbeitrag €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
+          <div>
+            <label>Versicherungen (gesamt) €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
+
+          <div>
+            <label>Lebensmittel €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
+          <div>
+            <label>Drogerie / Haushalt €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
+
+          <div>
+            <label>Auto / ÖPNV (Tanken, Tickets) €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
+          <div>
+            <label>Auto-Versicherung/Steuer/Wartung €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
+
+          <div>
+            <label>Abos (Streaming, Fitness, etc.) €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
+          <div>
+            <label>Kinder (Kita/Schule/Verein) €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
+
+          <div>
+            <label>Gesundheit (Arzt/Medikamente) €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
+          <div>
+            <label>Freizeit / Essen gehen €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
+
+          <div>
+            <label>Kleidung €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
+          <div>
+            <label>Sonstiges Haushalt €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
         </div>
 
         <hr>
 
-        <div class="row three">
+        <h2>3) Sparen & Investieren</h2>
+        <div class="row two">
           <div>
-            <label for="timeframe">Timeframe</label>
-            <select id="timeframe">
-              <option value="Weekly">Weekly</option>
-              <option value="Daily">Daily</option>
-              <option value="H4">H4</option>
-              <option value="H1">H1</option>
-              <option value="M15">M15</option>
-              <option value="M5">M5</option>
-            </select>
+            <label for="savings">💰 Sparbuch (Einzahlung) €</label>
+            <input id="savings" type="number" min="0" step="0.01" value="0" />
+            <div class="hint">Das wird automatisch vom Einkommen abgezogen.</div>
           </div>
-
           <div>
-            <label for="market">Market</label>
-            <select id="market">
-              <option value="Aktie">Aktie</option>
-              <option value="Index">Index</option>
-              <option value="Forex">Forex</option>
-              <option value="Krypto">Krypto</option>
-              <option value="Rohstoff">Rohstoff</option>
-            </select>
-          </div>
-
-          <div>
-            <label for="asset">Asset / Ticker</label>
-            <input id="asset" placeholder="z. B. AAPL, DAX, EURUSD, BTCUSD" />
+            <label for="invest">📈 Investieren (ETF/Aktien/etc.) €</label>
+            <input id="invest" type="number" min="0" step="0.01" value="0" />
+            <div class="hint">Auch das wird automatisch abgezogen.</div>
           </div>
         </div>
 
-        <div style="margin-top:10px" class="toggleRow">
-          <div class="toggle" style="width:100%">
-            <div class="tText">
-              <b>Weekly Bias berücksichtigen</b>
-              <span>Weekly Kontext wird im Fazit priorisiert (empfohlen).</span>
-            </div>
-            <div class="switch on" id="weeklySwitch" role="switch" aria-checked="true" tabindex="0"></div>
-          </div>
-        </div>
+        <hr>
 
-        <div style="margin-top:10px">
-          <label for="notes">Notizen (optional)</label>
-          <textarea id="notes" placeholder="z. B. Ich sehe Resistance bei 1.0950, RSI Divergenz, Volumen spike bei Breakout…"></textarea>
-          <div class="small">Tipp: Schreib dazu, ob du eher Swing (Tage/Wochen) oder Day-Trading (Intraday) machst.</div>
+        <h2>4) Kredite, Privatdarlehen & Sonstiges</h2>
+        <div class="row two">
+          <div>
+            <label>Kredite (monatlich) €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
+          <div>
+            <label>Privatdarlehen €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
+          <div>
+            <label>Sonstige Verpflichtungen €</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
+          <div>
+            <label>Rücklagen für Reparaturen € (optional)</label>
+            <input class="expense" type="number" min="0" step="0.01" value="0" />
+          </div>
         </div>
 
         <div class="actions">
-          <button class="btn primary" type="button" id="runBtn">Analyse starten</button>
-          <button class="btn ghost" type="button" id="demoBtn">Demo füllen</button>
-          <button class="btn ghost" type="button" id="resetBtn">Reset</button>
+          <button class="primary" type="button" id="demoBtn">Demo füllen</button>
+          <button type="button" id="resetBtn">Reset</button>
         </div>
 
-        <div class="status" id="statusBox">Bereit. Upload ein Chart-Bild und starte die Analyse.</div>
-        <pre id="payloadBox" style="display:none"></pre>
-
+        <div class="small">
+          Tipp: Wenn du willst, speichere ich die Werte automatisch im Browser (LocalStorage), damit es beim nächsten Öffnen noch drin ist.
+        </div>
       </section>
 
-      <!-- RIGHT -->
+      <!-- RIGHT: Summary -->
       <aside class="card">
-        <h2>Output</h2>
-        <div class="sub">Hier erscheint dein strukturierter TA-Report. (Aktuell: Template + Platzhalter, bereit für die Analyse-Engine.)</div>
+        <h2>📊 Monatsübersicht</h2>
+        <div class="summaryBox" id="summaryBox">
+          <div class="kpi"><b>Einnahmen gesamt</b><span id="kpiIncome">0,00 €</span></div>
+          <div class="kpi"><b>Fixkosten & Haushalt</b><span id="kpiExpenses">0,00 €</span></div>
+          <div class="kpi"><b>Sparen</b><span id="kpiSavings">0,00 €</span></div>
+          <div class="kpi"><b>Investieren</b><span id="kpiInvest">0,00 €</span></div>
+          <div class="kpi"><b>Gesamtabzug</b><span id="kpiOut">0,00 €</span></div>
 
-        <div class="outBox" id="outBox" style="display:none">
-          <h3>Technical Analysis Report</h3>
-
-          <div class="chips" id="tagChips"></div>
-
-          <div class="outGrid" style="margin-top:12px">
-            <div class="kv">
-              <b>Marktphase</b>
-              <p id="outPhase">—</p>
-            </div>
-            <div class="kv">
-              <b>Trendbewertung</b>
-              <p id="outTrend">—</p>
-            </div>
-          </div>
-
-          <div class="kv" style="margin-top:12px">
-            <b>Technische Argumente</b>
-            <ul id="outArgs"></ul>
-          </div>
-
-          <div class="outGrid" style="margin-top:12px">
-            <div class="kv">
-              <b>Szenario A (Hauptszenario)</b>
-              <p id="outScenarioA">—</p>
-            </div>
-            <div class="kv">
-              <b>Szenario B (Alternativ)</b>
-              <p id="outScenarioB">—</p>
-            </div>
-          </div>
-
-          <div class="kv" style="margin-top:12px">
-            <b>Fazit & Invalidation</b>
-            <p id="outConclusion">—</p>
-          </div>
-
-          <div class="small" style="margin-top:10px">
-            Hinweis: Das ist eine Analyse-/Entscheidungsunterstützung, kein Trading-Signal.
-          </div>
-        </div>
-
-        <div class="outBox">
-          <div class="sub">
-            <b>Pro-Workflow (Option 1):</b><br><br>
-            1) <b>Weekly:</b> Struktur & Bias definieren<br>
-            2) <b>Daily/H4:</b> Levels & Setup-Zone bestimmen<br>
-            3) <b>Intraday:</b> Entry/Exit nur im Rahmen des Bias<br><br>
-            <span class="small">Wenn du willst, ergänzen wir als nächstes: Level-Checkliste (Support/Resistance, Trendline, MA, RSI, MACD, Volume).</span>
-          </div>
+          <div class="big" id="kpiRest">Verfügbar: 0,00 €</div>
+          <div class="small" id="kpiNote">—</div>
         </div>
       </aside>
     </div>
   </div>
 
-  <script>
-    const chartUpload = document.getElementById('chartUpload');
-    const dropZone = document.getElementById('dropZone');
-    const previewBox = document.getElementById('previewBox');
-    const previewImg = document.getElementById('previewImg');
-    const imgMeta = document.getElementById('imgMeta');
-    const removeImg = document.getElementById('removeImg');
+<script>
+  const salary = document.getElementById('salary');
+  const otherIncome = document.getElementById('otherIncome');
+  const savings = document.getElementById('savings');
+  const invest = document.getElementById('invest');
+  const expenseInputs = () => Array.from(document.querySelectorAll('.expense'));
 
-    const timeframe = document.getElementById('timeframe');
-    const market = document.getElementById('market');
-    const asset = document.getElementById('asset');
-    const notes = document.getElementById('notes');
+  const kpiIncome = document.getElementById('kpiIncome');
+  const kpiExpenses = document.getElementById('kpiExpenses');
+  const kpiSavings = document.getElementById('kpiSavings');
+  const kpiInvest = document.getElementById('kpiInvest');
+  const kpiOut = document.getElementById('kpiOut');
+  const kpiRest = document.getElementById('kpiRest');
+  const kpiNote = document.getElementById('kpiNote');
 
-    const weeklySwitch = document.getElementById('weeklySwitch');
-    const runBtn = document.getElementById('runBtn');
-    const demoBtn = document.getElementById('demoBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const statusBox = document.getElementById('statusBox');
-    const payloadBox = document.getElementById('payloadBox');
+  const euro = (n) => (Number(n || 0)).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
+  const num = (el) => {
+    const v = Number(el.value);
+    return Number.isFinite(v) ? v : 0;
+  };
 
-    const outBox = document.getElementById('outBox');
-    const tagChips = document.getElementById('tagChips');
-    const outPhase = document.getElementById('outPhase');
-    const outTrend = document.getElementById('outTrend');
-    const outArgs = document.getElementById('outArgs');
-    const outScenarioA = document.getElementById('outScenarioA');
-    const outScenarioB = document.getElementById('outScenarioB');
-    const outConclusion = document.getElementById('outConclusion');
+  function calculate(){
+    const income = num(salary) + num(otherIncome);
 
-    let weeklyBiasOn = true;
-    let imageFile = null;
+    let expenses = 0;
+    for(const e of expenseInputs()) expenses += num(e);
 
-    function setStatus(type, text){
-      statusBox.classList.remove('ok','err');
-      if(type) statusBox.classList.add(type);
-      statusBox.textContent = text;
+    const s = num(savings);
+    const i = num(invest);
+
+    const out = expenses + s + i;
+    const rest = income - out;
+
+    kpiIncome.textContent = euro(income);
+    kpiExpenses.textContent = euro(expenses);
+    kpiSavings.textContent = euro(s);
+    kpiInvest.textContent = euro(i);
+    kpiOut.textContent = euro(out);
+
+    if(rest >= 0){
+      kpiRest.className = "big green";
+      kpiRest.textContent = `Verfügbar: ${euro(rest)}`;
+      kpiNote.textContent = "✅ Alles im grünen Bereich. Wenn du willst, können wir dir auch eine Sparquote (%) anzeigen.";
+    } else {
+      kpiRest.className = "big red";
+      kpiRest.textContent = `Verfügbar: ${euro(rest)}`;
+      kpiNote.textContent = "⚠️ Du bist im Minus. Prüfe Fixkosten / Sparrate / Invest, oder erhöhe Einnahmen.";
+    }
+  }
+
+  // Live updates
+  document.querySelectorAll('input').forEach(inp => inp.addEventListener('input', calculate));
+
+  // Demo / Reset
+  document.getElementById('demoBtn').addEventListener('click', () => {
+    salary.value = 3200;
+    otherIncome.value = 150;
+
+    const exps = expenseInputs();
+    // Reihenfolge wie oben im HTML:
+    const demo = [
+      1100, 85, 45, 25, 40, 25, 18, 90, 450, 110, 60, 35, 25, 80, 70, 60, 40, 100, // Fixkosten/Haushalt
+      220, 80, 50, 60 // Kredite/Privatdarlehen/Sonstiges/Rücklagen
+    ];
+
+    // Wir haben mehr Felder als demo? Dann füllen wir so viele wie passen.
+    for(let idx=0; idx<exps.length; idx++){
+      exps[idx].value = demo[idx] ?? 0;
     }
 
-    function setSwitch(on){
-      weeklyBiasOn = on;
-      weeklySwitch.classList.toggle('on', on);
-      weeklySwitch.setAttribute('aria-checked', String(on));
-    }
+    savings.value = 300;
+    invest.value = 250;
+    calculate();
+  });
 
-    weeklySwitch.addEventListener('click', () => setSwitch(!weeklyBiasOn));
-    weeklySwitch.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSwitch(!weeklyBiasOn); }
-    });
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    salary.value = 0;
+    otherIncome.value = 0;
+    savings.value = 0;
+    invest.value = 0;
+    expenseInputs().forEach(e => e.value = 0);
+    calculate();
+  });
 
-    function showImage(file){
-      imageFile = file;
-      const url = URL.createObjectURL(file);
-      previewImg.src = url;
-      previewBox.style.display = 'block';
-      imgMeta.textContent = `${file.name} • ${Math.round(file.size/1024)} KB`;
-    }
-
-    function clearImage(){
-      imageFile = null;
-      previewImg.src = '';
-      previewBox.style.display = 'none';
-      imgMeta.textContent = '—';
-      chartUpload.value = '';
-    }
-
-    chartUpload.addEventListener('change', (e) => {
-      const f = e.target.files && e.target.files[0];
-      if(!f) return;
-      if(!f.type.startsWith('image/')) {
-        setStatus('err', 'Bitte ein Bild (PNG/JPG/WebP) hochladen.');
-        return;
-      }
-      showImage(f);
-      setStatus('', 'Bild geladen. Du kannst jetzt die Analyse starten.');
-    });
-
-    // Drag & drop
-    dropZone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropZone.style.borderColor = 'rgba(106,228,255,.55)';
-    });
-    dropZone.addEventListener('dragleave', () => {
-      dropZone.style.borderColor = 'rgba(255,255,255,.20)';
-    });
-    dropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropZone.style.borderColor = 'rgba(255,255,255,.20)';
-      const f = e.dataTransfer.files && e.dataTransfer.files[0];
-      if(!f) return;
-      if(!f.type.startsWith('image/')) {
-        setStatus('err', 'Bitte ein Bild (PNG/JPG/WebP) droppen.');
-        return;
-      }
-      showImage(f);
-      setStatus('', 'Bild geladen (Drag & Drop). Analyse starten.');
-    });
-
-    removeImg.addEventListener('click', () => {
-      clearImage();
-      setStatus('', 'Bild entfernt. Upload ein neues Chart-Bild.');
-      outBox.style.display = 'none';
-    });
-
-    function payload(){
-      return {
-        timeframe: timeframe.value,
-        market: market.value,
-        asset: asset.value.trim(),
-        weeklyBiasOn,
-        notes: notes.value.trim(),
-        image: imageFile ? { name: imageFile.name, size_kb: Math.round(imageFile.size/1024), type: imageFile.type } : null,
-        meta: { createdAt: new Date().toISOString(), version: "ta-ui-1.0" }
-      };
-    }
-
-    function renderChips(p){
-      tagChips.innerHTML = '';
-      const chips = [
-        {text: p.timeframe, tone:'ok'},
-        {text: p.market, tone:'ok'},
-        {text: p.asset ? p.asset : 'No ticker', tone: p.asset ? 'ok' : 'warn'},
-        {text: p.weeklyBiasOn ? 'Weekly bias ON' : 'Weekly bias OFF', tone: p.weeklyBiasOn ? 'ok' : 'warn'}
-      ];
-      for(const c of chips){
-        const el = document.createElement('div');
-        el.className = 'chip ' + c.tone;
-        el.textContent = c.text;
-        tagChips.appendChild(el);
-      }
-    }
-
-    // Placeholder report (bis wir die Engine anschließen)
-    function placeholderReport(p){
-      const tf = p.timeframe;
-      const bias = p.weeklyBiasOn ? "Weekly Bias wird priorisiert." : "Weekly Bias ist deaktiviert.";
-      outPhase.textContent = "Unklar (Template) – bitte Engine anschließen.";
-      outTrend.textContent = `${tf}: Trend wird anhand Struktur/MA/RSI bewertet. ${bias}`;
-
-      outArgs.innerHTML = '';
-      [
-        "Marktstruktur prüfen: HH/HL vs LH/LL (Trend oder Range?)",
-        "Key Levels: Support/Resistance-Zonen definieren",
-        "Trendfilter: 200 MA (darüber bullisch, darunter bearisch)",
-        "RSI: >50 bullisch / <50 bearisch, Divergenzen beachten",
-        "MACD/Volumen: Momentum & Bestätigung checken"
-      ].forEach(t => {
-        const li = document.createElement('li');
-        li.textContent = t;
-        outArgs.appendChild(li);
-      });
-
-      outScenarioA.textContent = "Szenario A (60–70%): Fortsetzung im Trend nach Pullback an Support-Zone (wenn Struktur intakt).";
-      outScenarioB.textContent = "Szenario B (30–40%): Range/Umkehr bei Bruch der letzten Higher-Low / Support-Zone (Invalidate).";
-      outConclusion.textContent = "Fazit (Template): Bias folgt der Struktur. Invalidation = klar definierter Level-Bruch (Support/Trendline/MA).";
-    }
-
-    runBtn.addEventListener('click', () => {
-      const p = payload();
-      payloadBox.style.display = 'block';
-      payloadBox.textContent = JSON.stringify(p, null, 2);
-
-      if(!p.image){
-        setStatus('err', 'Bitte zuerst ein Chart-Bild hochladen.');
-        outBox.style.display = 'none';
-        return;
-      }
-
-      // UI ok – Report anzeigen (Platzhalter)
-      renderChips(p);
-      placeholderReport(p);
-      outBox.style.display = 'block';
-      setStatus('ok', 'Report erstellt (UI-V1). Nächster Schritt: Analyse-Engine anschließen.');
-    });
-
-    demoBtn.addEventListener('click', () => {
-      timeframe.value = "Weekly";
-      market.value = "Forex";
-      asset.value = "EURUSD";
-      setSwitch(true);
-      notes.value = "Ich sehe eine große Weekly-Range. Preis nahe Resistance, RSI ~55, Volumen bei Breakout war schwach. Bitte Bias & Szenarien definieren.";
-      setStatus('', 'Demo gefüllt. Jetzt ein Chart-Bild hochladen und Analyse starten.');
-    });
-
-    resetBtn.addEventListener('click', () => {
-      timeframe.value = "Weekly";
-      market.value = "Aktie";
-      asset.value = "";
-      notes.value = "";
-      setSwitch(true);
-      clearImage();
-      outBox.style.display = 'none';
-      payloadBox.style.display = 'none';
-      payloadBox.textContent = '';
-      setStatus('', 'Reset. Upload ein Chart-Bild und starte die Analyse.');
-    });
-
-    // init
-    setSwitch(true);
-  </script>
+  calculate();
+</script>
 </body>
 </html>
