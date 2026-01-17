@@ -14,6 +14,7 @@
       --ok:#6aff9b;
       --bad:#ff6a6a;
       --warn:#ffd26a;
+      --shadow: 0 12px 34px rgba(0,0,0,.45);
     }
     *{box-sizing:border-box}
     body{
@@ -25,26 +26,27 @@
         var(--bg);
       color:var(--text);
     }
-    .wrap{max-width:980px; margin:0 auto; padding:22px 18px 42px}
+    .wrap{max-width:1100px; margin:0 auto; padding:22px 18px 42px}
     header{padding:8px 0 14px}
     h1{margin:0; font-size:22px}
     .sub{margin:8px 0 0; color:var(--muted); line-height:1.35; font-size:13px}
     .grid{display:grid; gap:14px}
-    @media (min-width: 900px){
-      .grid{grid-template-columns: 1.2fr .8fr}
+    @media (min-width: 980px){
+      .grid{grid-template-columns: 1.25fr .75fr}
     }
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid var(--border);
       border-radius:16px;
       padding:16px;
-      box-shadow: 0 12px 34px rgba(0,0,0,.45);
+      box-shadow: var(--shadow);
       backdrop-filter: blur(10px);
     }
     .card h2{margin:0 0 10px; font-size:15px}
     .row{display:grid; gap:10px}
     @media (min-width: 650px){
       .row.two{grid-template-columns: 1fr 1fr}
+      .row.three{grid-template-columns: 1fr 1fr 1fr}
     }
     label{display:block; font-size:12px; color:var(--muted); margin:6px 0 6px}
     input{
@@ -67,12 +69,16 @@
       border-radius:12px;
       background: rgba(255,255,255,.05);
       color: var(--text);
-      font-weight:700;
+      font-weight:800;
       font-size:12px;
     }
     button.primary{
       background: linear-gradient(90deg, rgba(106,255,155,.18), rgba(106,228,255,.18));
       border-color: rgba(106,255,155,.35);
+    }
+    button.danger{
+      background: rgba(255,106,106,.14);
+      border-color: rgba(255,106,106,.35);
     }
 
     .summaryBox{
@@ -81,18 +87,60 @@
       border-radius:16px;
       padding:14px;
     }
-    .kpi{display:flex; justify-content:space-between; gap:10px; padding:8px 10px;
-      border:1px solid var(--border); border-radius:12px; background: rgba(255,255,255,.04); margin-top:8px}
+    .kpi{
+      display:flex; justify-content:space-between; gap:10px; align-items:baseline;
+      padding:8px 10px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background: rgba(255,255,255,.04);
+      margin-top:8px
+    }
     .kpi b{font-size:12px}
     .kpi span{font-size:12px; color:var(--muted)}
-    .big{
-      margin-top:10px;
-      font-size:18px;
-      font-weight:800;
-    }
+    .big{margin-top:10px; font-size:18px; font-weight:900}
     .green{color:var(--ok)}
     .red{color:var(--bad)}
     .small{font-size:11px; color:var(--muted); margin-top:8px; line-height:1.35}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    /* Immobilien */
+    .propHeader{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-top:6px;
+    }
+    .propList{display:grid; gap:10px; margin-top:10px}
+    .propCard{
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.18);
+      border-radius:16px;
+      padding:12px;
+    }
+    .propTop{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-bottom:10px;
+    }
+    .propTop b{font-size:13px}
+    .propMeta{color:var(--muted); font-size:12px}
+    .propKpiRow{
+      display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;
+    }
+    .propKpi{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      border-radius:12px;
+      padding:8px 10px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .propKpi strong{color:var(--text)}
   </style>
 </head>
 
@@ -101,7 +149,8 @@
     <header>
       <h1>🏠 Haushaltskasse – Familie Tuncay</h1>
       <p class="sub">
-        Monats-Übersicht: Einnahmen eintragen → Fixkosten + Sparen + Investieren + Kredite werden automatisch abgezogen → Restbetrag am Monatsende.
+        Monats-Übersicht: Einnahmen eintragen → Ausgaben + Sparen/Investieren + Kredite werden abgezogen.
+        <br>Neu: <b>Immobilieninvestments</b> (Mieteinnahmen, Annuität/Rate, Nebenkosten, Cashflow) – beliebig viele Immobilien.
       </p>
     </header>
 
@@ -119,92 +168,38 @@
             <input id="otherIncome" type="number" min="0" step="0.01" value="0" />
           </div>
         </div>
-        <div class="hint">Wenn ihr später 2 Gehälter wollt, bauen wir das als extra Felder rein.</div>
+        <div class="hint">Alles wird automatisch gespeichert (Browser-Speicher). Beim nächsten Öffnen ist alles wieder da.</div>
 
         <hr>
 
         <h2>2) Fixkosten & Haushalt (Ausgaben)</h2>
         <div class="row two">
-          <div>
-            <label>Miete / Kreditrate €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
-          <div>
-            <label>Strom €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
+          <div><label>Miete / Kreditrate (eigene Wohnung) €</label><input class="expense" data-key="rent_home" type="number" min="0" step="0.01" value="0" /></div>
+          <div><label>Strom €</label><input class="expense" data-key="power" type="number" min="0" step="0.01" value="0" /></div>
 
-          <div>
-            <label>Internet €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
-          <div>
-            <label>Mobilfunk €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
+          <div><label>Internet €</label><input class="expense" data-key="internet" type="number" min="0" step="0.01" value="0" /></div>
+          <div><label>Mobilfunk €</label><input class="expense" data-key="mobile" type="number" min="0" step="0.01" value="0" /></div>
 
-          <div>
-            <label>Heizung / Gas €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
-          <div>
-            <label>Wasser / Abwasser €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
+          <div><label>Heizung / Gas €</label><input class="expense" data-key="heating" type="number" min="0" step="0.01" value="0" /></div>
+          <div><label>Wasser / Abwasser €</label><input class="expense" data-key="water" type="number" min="0" step="0.01" value="0" /></div>
 
-          <div>
-            <label>Rundfunkbeitrag €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
-          <div>
-            <label>Versicherungen (gesamt) €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
+          <div><label>Rundfunkbeitrag €</label><input class="expense" data-key="broadcast" type="number" min="0" step="0.01" value="0" /></div>
+          <div><label>Versicherungen (gesamt) €</label><input class="expense" data-key="insurances" type="number" min="0" step="0.01" value="0" /></div>
 
-          <div>
-            <label>Lebensmittel €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
-          <div>
-            <label>Drogerie / Haushalt €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
+          <div><label>Lebensmittel €</label><input class="expense" data-key="groceries" type="number" min="0" step="0.01" value="0" /></div>
+          <div><label>Drogerie / Haushalt €</label><input class="expense" data-key="drugstore" type="number" min="0" step="0.01" value="0" /></div>
 
-          <div>
-            <label>Auto / ÖPNV (Tanken, Tickets) €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
-          <div>
-            <label>Auto-Versicherung/Steuer/Wartung €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
+          <div><label>Auto / ÖPNV (Tanken, Tickets) €</label><input class="expense" data-key="transport" type="number" min="0" step="0.01" value="0" /></div>
+          <div><label>Auto (Vers./Steuer/Wartung) €</label><input class="expense" data-key="car_fixed" type="number" min="0" step="0.01" value="0" /></div>
 
-          <div>
-            <label>Abos (Streaming, Fitness, etc.) €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
-          <div>
-            <label>Kinder (Kita/Schule/Verein) €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
+          <div><label>Abos (Streaming, Fitness, etc.) €</label><input class="expense" data-key="subs" type="number" min="0" step="0.01" value="0" /></div>
+          <div><label>Kinder (Kita/Schule/Verein) €</label><input class="expense" data-key="kids" type="number" min="0" step="0.01" value="0" /></div>
 
-          <div>
-            <label>Gesundheit (Arzt/Medikamente) €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
-          <div>
-            <label>Freizeit / Essen gehen €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
+          <div><label>Gesundheit (Arzt/Medikamente) €</label><input class="expense" data-key="health" type="number" min="0" step="0.01" value="0" /></div>
+          <div><label>Freizeit / Essen gehen €</label><input class="expense" data-key="fun" type="number" min="0" step="0.01" value="0" /></div>
 
-          <div>
-            <label>Kleidung €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
-          <div>
-            <label>Sonstiges Haushalt €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
+          <div><label>Kleidung €</label><input class="expense" data-key="clothes" type="number" min="0" step="0.01" value="0" /></div>
+          <div><label>Sonstiges Haushalt €</label><input class="expense" data-key="misc" type="number" min="0" step="0.01" value="0" /></div>
         </div>
 
         <hr>
@@ -214,12 +209,12 @@
           <div>
             <label for="savings">💰 Sparbuch (Einzahlung) €</label>
             <input id="savings" type="number" min="0" step="0.01" value="0" />
-            <div class="hint">Das wird automatisch vom Einkommen abgezogen.</div>
+            <div class="hint">Wird automatisch vom Einkommen abgezogen.</div>
           </div>
           <div>
             <label for="invest">📈 Investieren (ETF/Aktien/etc.) €</label>
             <input id="invest" type="number" min="0" step="0.01" value="0" />
-            <div class="hint">Auch das wird automatisch abgezogen.</div>
+            <div class="hint">Wird automatisch vom Einkommen abgezogen.</div>
           </div>
         </div>
 
@@ -227,136 +222,430 @@
 
         <h2>4) Kredite, Privatdarlehen & Sonstiges</h2>
         <div class="row two">
-          <div>
-            <label>Kredite (monatlich) €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
-          <div>
-            <label>Privatdarlehen €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
-          <div>
-            <label>Sonstige Verpflichtungen €</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
-          <div>
-            <label>Rücklagen für Reparaturen € (optional)</label>
-            <input class="expense" type="number" min="0" step="0.01" value="0" />
-          </div>
+          <div><label>Kredite (monatlich) €</label><input class="expense" data-key="loans" type="number" min="0" step="0.01" value="0" /></div>
+          <div><label>Privatdarlehen €</label><input class="expense" data-key="private_loans" type="number" min="0" step="0.01" value="0" /></div>
+          <div><label>Sonstige Verpflichtungen €</label><input class="expense" data-key="obligations" type="number" min="0" step="0.01" value="0" /></div>
+          <div><label>Rücklagen (Reparaturen) € (optional)</label><input class="expense" data-key="repairs" type="number" min="0" step="0.01" value="0" /></div>
         </div>
+
+        <hr>
+
+        <h2>5) Immobilieninvestments</h2>
+        <div class="hint">
+          Pro Immobilie: <b>Mieteinnahmen</b> (Einnahme) minus <b>Annuität/Rate</b> und <b>Nebenkosten</b> (Ausgaben) ⇒ <b>Cashflow</b> oder <b>Miese</b>.
+          Das fließt in die Gesamtauswertung mit rein.
+        </div>
+
+        <div class="propHeader">
+          <span class="pill">🏘️ Beliebig viele Immobilien hinzufügen</span>
+          <button class="primary" type="button" id="addPropertyBtn">+ Immobilie hinzufügen</button>
+        </div>
+
+        <div id="propertyList" class="propList"></div>
 
         <div class="actions">
           <button class="primary" type="button" id="demoBtn">Demo füllen</button>
-          <button type="button" id="resetBtn">Reset</button>
+          <button type="button" id="resetBtn">Reset (alles löschen)</button>
         </div>
 
         <div class="small">
-          Tipp: Wenn du willst, speichere ich die Werte automatisch im Browser (LocalStorage), damit es beim nächsten Öffnen noch drin ist.
+          Automatisches Speichern: ✅ aktiv. (Lokaler Browser-Speicher) – keine Cloud, keine Weitergabe.
         </div>
       </section>
 
       <!-- RIGHT: Summary -->
       <aside class="card">
         <h2>📊 Monatsübersicht</h2>
-        <div class="summaryBox" id="summaryBox">
+        <div class="summaryBox">
           <div class="kpi"><b>Einnahmen gesamt</b><span id="kpiIncome">0,00 €</span></div>
-          <div class="kpi"><b>Fixkosten & Haushalt</b><span id="kpiExpenses">0,00 €</span></div>
+          <div class="kpi"><b>Ausgaben gesamt</b><span id="kpiExpenses">0,00 €</span></div>
+
           <div class="kpi"><b>Sparen</b><span id="kpiSavings">0,00 €</span></div>
           <div class="kpi"><b>Investieren</b><span id="kpiInvest">0,00 €</span></div>
+
+          <div class="kpi"><b>Immobilien: Mieteinnahmen</b><span id="kpiPropIncome">0,00 €</span></div>
+          <div class="kpi"><b>Immobilien: Rate + Nebenkosten</b><span id="kpiPropOut">0,00 €</span></div>
+          <div class="kpi"><b>Immobilien: Cashflow</b><span id="kpiPropNet">0,00 €</span></div>
+
           <div class="kpi"><b>Gesamtabzug</b><span id="kpiOut">0,00 €</span></div>
 
           <div class="big" id="kpiRest">Verfügbar: 0,00 €</div>
           <div class="small" id="kpiNote">—</div>
+          <div class="small mono" id="savedNote" style="margin-top:10px;">—</div>
         </div>
       </aside>
     </div>
   </div>
 
 <script>
+  // ----------------------------
+  // Storage
+  // ----------------------------
+  const STORAGE_KEY = "familie_tuncay_haushaltskasse_v1";
+
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return null;
+      const st = JSON.parse(raw);
+      return st && typeof st === "object" ? st : null;
+    }catch(_){ return null; }
+  }
+
+  function saveStateNow(state){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      setSavedNote(true);
+    }catch(_){
+      setSavedNote(false);
+    }
+  }
+
+  let saveTimer = null;
+  function saveStateDebounced(state){
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => saveStateNow(state), 150);
+  }
+
+  // ----------------------------
+  // DOM
+  // ----------------------------
   const salary = document.getElementById('salary');
   const otherIncome = document.getElementById('otherIncome');
   const savings = document.getElementById('savings');
   const invest = document.getElementById('invest');
-  const expenseInputs = () => Array.from(document.querySelectorAll('.expense'));
+  const propertyList = document.getElementById('propertyList');
 
   const kpiIncome = document.getElementById('kpiIncome');
   const kpiExpenses = document.getElementById('kpiExpenses');
   const kpiSavings = document.getElementById('kpiSavings');
   const kpiInvest = document.getElementById('kpiInvest');
+  const kpiPropIncome = document.getElementById('kpiPropIncome');
+  const kpiPropOut = document.getElementById('kpiPropOut');
+  const kpiPropNet = document.getElementById('kpiPropNet');
   const kpiOut = document.getElementById('kpiOut');
   const kpiRest = document.getElementById('kpiRest');
   const kpiNote = document.getElementById('kpiNote');
+  const savedNote = document.getElementById('savedNote');
 
   const euro = (n) => (Number(n || 0)).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " €";
-  const num = (el) => {
-    const v = Number(el.value);
-    return Number.isFinite(v) ? v : 0;
+  const num = (v) => {
+    const x = Number(v);
+    return Number.isFinite(x) ? x : 0;
   };
 
+  function expenseInputs(){ return Array.from(document.querySelectorAll('.expense')); }
+
+  // ----------------------------
+  // Immobilien: Model + UI
+  // ----------------------------
+  let properties = []; // [{id, name, annuity, costs, rent}]
+
+  function uid(){
+    return Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
+  }
+
+  function propertyCashflow(p){
+    const rent = num(p.rent);
+    const out = num(p.annuity) + num(p.costs);
+    return rent - out;
+  }
+
+  function renderProperties(){
+    propertyList.innerHTML = "";
+
+    if(properties.length === 0){
+      const empty = document.createElement("div");
+      empty.className = "hint";
+      empty.style.marginTop = "10px";
+      empty.textContent = "Noch keine Immobilie hinzugefügt. Klicke „+ Immobilie hinzufügen“.";
+      propertyList.appendChild(empty);
+      return;
+    }
+
+    properties.forEach((p, idx) => {
+      const cf = propertyCashflow(p);
+
+      const card = document.createElement("div");
+      card.className = "propCard";
+      card.dataset.id = p.id;
+
+      card.innerHTML = `
+        <div class="propTop">
+          <div>
+            <b>Immobilie ${idx+1}</b>
+            <div class="propMeta">Name/Ort frei wählbar • Cashflow wird live berechnet</div>
+          </div>
+          <button class="danger" type="button" data-action="remove">Entfernen</button>
+        </div>
+
+        <div class="row two">
+          <div>
+            <label>Name / Ort (optional)</label>
+            <input data-field="name" placeholder="z. B. ETW Köln / Haus Essen" value="${escapeHtml(p.name || "")}">
+          </div>
+          <div>
+            <label>Mieteinnahmen (monatlich) €</label>
+            <input data-field="rent" type="number" min="0" step="0.01" value="${num(p.rent)}">
+          </div>
+
+          <div>
+            <label>Annuität / Rate (monatlich) €</label>
+            <input data-field="annuity" type="number" min="0" step="0.01" value="${num(p.annuity)}">
+          </div>
+          <div>
+            <label>Nebenkosten (nicht umlagefähig etc.) €</label>
+            <input data-field="costs" type="number" min="0" step="0.01" value="${num(p.costs)}">
+          </div>
+        </div>
+
+        <div class="propKpiRow">
+          <div class="propKpi">Miete: <strong>${euro(num(p.rent))}</strong></div>
+          <div class="propKpi">Rate+NK: <strong>${euro(num(p.annuity)+num(p.costs))}</strong></div>
+          <div class="propKpi">Cashflow: <strong style="color:${cf>=0?'var(--ok)':'var(--bad)'}">${euro(cf)}</strong></div>
+        </div>
+      `;
+
+      // Remove button
+      card.querySelector('[data-action="remove"]').addEventListener('click', () => {
+        properties = properties.filter(x => x.id !== p.id);
+        renderProperties();
+        calculateAndPersist();
+      });
+
+      // Inputs update
+      card.querySelectorAll('input[data-field]').forEach(inp => {
+        inp.addEventListener('input', () => {
+          const field = inp.getAttribute('data-field');
+          const val = inp.value;
+          const target = properties.find(x => x.id === p.id);
+          if(!target) return;
+
+          if(field === "name") target.name = val;
+          else target[field] = num(val);
+
+          // Re-render just this card KPIs quickly by full re-render (still fast)
+          renderProperties();
+          calculateAndPersist();
+        });
+      });
+
+      propertyList.appendChild(card);
+    });
+  }
+
+  function escapeHtml(str){
+    return String(str || "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function addProperty(defaults){
+    properties.push({
+      id: uid(),
+      name: defaults?.name || "",
+      rent: num(defaults?.rent),
+      annuity: num(defaults?.annuity),
+      costs: num(defaults?.costs)
+    });
+    renderProperties();
+    calculateAndPersist();
+  }
+
+  document.getElementById('addPropertyBtn').addEventListener('click', () => addProperty());
+
+  // ----------------------------
+  // Calculation + Persistence
+  // ----------------------------
+  function collectState(){
+    const expenses = {};
+    expenseInputs().forEach(e => {
+      const key = e.getAttribute("data-key") || ("exp_" + Math.random().toString(16).slice(2));
+      expenses[key] = num(e.value);
+    });
+
+    return {
+      income: {
+        salary: num(salary.value),
+        otherIncome: num(otherIncome.value)
+      },
+      savings: {
+        savings: num(savings.value),
+        invest: num(invest.value)
+      },
+      expenses,
+      properties: properties.map(p => ({
+        id: p.id,
+        name: p.name || "",
+        rent: num(p.rent),
+        annuity: num(p.annuity),
+        costs: num(p.costs)
+      })),
+      meta: { savedAt: new Date().toISOString(), version: "1.0" }
+    };
+  }
+
+  function applyState(st){
+    salary.value = num(st?.income?.salary);
+    otherIncome.value = num(st?.income?.otherIncome);
+    savings.value = num(st?.savings?.savings);
+    invest.value = num(st?.savings?.invest);
+
+    // expenses: map by data-key
+    const expMap = st?.expenses || {};
+    expenseInputs().forEach(e => {
+      const key = e.getAttribute("data-key");
+      if(key && Object.prototype.hasOwnProperty.call(expMap, key)){
+        e.value = num(expMap[key]);
+      }
+    });
+
+    // properties
+    const ps = Array.isArray(st?.properties) ? st.properties : [];
+    properties = ps.map(p => ({
+      id: p.id || uid(),
+      name: p.name || "",
+      rent: num(p.rent),
+      annuity: num(p.annuity),
+      costs: num(p.costs)
+    }));
+    renderProperties();
+  }
+
+  function setSavedNote(ok){
+    if(!ok){
+      savedNote.textContent = "⚠️ Konnte nicht speichern (Browser-Speicher blockiert?).";
+      return;
+    }
+    const st = loadState();
+    const at = st?.meta?.savedAt ? new Date(st.meta.savedAt) : null;
+    savedNote.textContent = at
+      ? `💾 Automatisch gespeichert: ${at.toLocaleString('de-DE')}`
+      : "💾 Automatisch gespeichert.";
+  }
+
   function calculate(){
-    const income = num(salary) + num(otherIncome);
+    // Base income
+    const baseIncome = num(salary.value) + num(otherIncome.value);
 
-    let expenses = 0;
-    for(const e of expenseInputs()) expenses += num(e);
+    // Base expenses
+    let baseExpenses = 0;
+    expenseInputs().forEach(e => baseExpenses += num(e.value));
 
-    const s = num(savings);
-    const i = num(invest);
+    // Savings & invest
+    const s = num(savings.value);
+    const i = num(invest.value);
 
-    const out = expenses + s + i;
-    const rest = income - out;
+    // Properties
+    let propIncome = 0;
+    let propOut = 0;
+    properties.forEach(p => {
+      propIncome += num(p.rent);
+      propOut += (num(p.annuity) + num(p.costs));
+    });
+    const propNet = propIncome - propOut;
 
-    kpiIncome.textContent = euro(income);
-    kpiExpenses.textContent = euro(expenses);
+    // Totals
+    const incomeTotal = baseIncome + propIncome;
+    const outTotal = baseExpenses + s + i + propOut; // propOut is part of expenses
+    const rest = incomeTotal - outTotal;
+
+    // KPIs
+    kpiIncome.textContent = euro(incomeTotal);
+    kpiExpenses.textContent = euro(baseExpenses + propOut); // show incl. property out in expenses line? keep separate too
     kpiSavings.textContent = euro(s);
     kpiInvest.textContent = euro(i);
-    kpiOut.textContent = euro(out);
+
+    kpiPropIncome.textContent = euro(propIncome);
+    kpiPropOut.textContent = euro(propOut);
+    kpiPropNet.textContent = euro(propNet);
+    kpiPropNet.style.color = (propNet >= 0) ? "var(--ok)" : "var(--bad)";
+
+    kpiOut.textContent = euro(outTotal);
 
     if(rest >= 0){
       kpiRest.className = "big green";
       kpiRest.textContent = `Verfügbar: ${euro(rest)}`;
-      kpiNote.textContent = "✅ Alles im grünen Bereich. Wenn du willst, können wir dir auch eine Sparquote (%) anzeigen.";
+      kpiNote.textContent = "✅ Alles im grünen Bereich.";
     } else {
       kpiRest.className = "big red";
       kpiRest.textContent = `Verfügbar: ${euro(rest)}`;
-      kpiNote.textContent = "⚠️ Du bist im Minus. Prüfe Fixkosten / Sparrate / Invest, oder erhöhe Einnahmen.";
+      kpiNote.textContent = "⚠️ Du bist im Minus. Prüfe Fixkosten/Sparrate/Invest/Immobilien-Cashflow.";
     }
   }
 
-  // Live updates
-  document.querySelectorAll('input').forEach(inp => inp.addEventListener('input', calculate));
+  function calculateAndPersist(){
+    calculate();
+    const st = collectState();
+    saveStateDebounced(st);
+  }
 
-  // Demo / Reset
+  // Live updates for inputs
+  document.querySelectorAll('input').forEach(inp => {
+    // property inputs are handled in renderProperties; but harmless if they also trigger
+    inp.addEventListener('input', () => calculateAndPersist());
+  });
+
+  // Demo
   document.getElementById('demoBtn').addEventListener('click', () => {
     salary.value = 3200;
     otherIncome.value = 150;
 
-    const exps = expenseInputs();
-    // Reihenfolge wie oben im HTML:
-    const demo = [
-      1100, 85, 45, 25, 40, 25, 18, 90, 450, 110, 60, 35, 25, 80, 70, 60, 40, 100, // Fixkosten/Haushalt
-      220, 80, 50, 60 // Kredite/Privatdarlehen/Sonstiges/Rücklagen
-    ];
-
-    // Wir haben mehr Felder als demo? Dann füllen wir so viele wie passen.
-    for(let idx=0; idx<exps.length; idx++){
-      exps[idx].value = demo[idx] ?? 0;
-    }
+    // Fill fixed expenses by data-key
+    const demo = {
+      rent_home: 1100, power: 85, internet: 45, mobile: 25, heating: 90, water: 25,
+      broadcast: 18, insurances: 120, groceries: 450, drugstore: 110, transport: 120,
+      car_fixed: 90, subs: 45, kids: 80, health: 25, fun: 120, clothes: 60, misc: 80,
+      loans: 220, private_loans: 80, obligations: 50, repairs: 60
+    };
+    expenseInputs().forEach(e => {
+      const key = e.getAttribute("data-key");
+      if(key && demo[key] !== undefined) e.value = demo[key];
+    });
 
     savings.value = 300;
     invest.value = 250;
-    calculate();
+
+    // Properties
+    properties = [];
+    addProperty({ name:"ETW Köln", rent: 980, annuity: 720, costs: 120 });
+    addProperty({ name:"ETW Essen", rent: 720, annuity: 610, costs: 90 });
+
+    calculateAndPersist();
   });
 
+  // Reset all
   document.getElementById('resetBtn').addEventListener('click', () => {
+    if(!confirm("Wirklich alles löschen (inkl. gespeicherter Daten)?")) return;
+    localStorage.removeItem(STORAGE_KEY);
+
     salary.value = 0;
     otherIncome.value = 0;
     savings.value = 0;
     invest.value = 0;
     expenseInputs().forEach(e => e.value = 0);
+
+    properties = [];
+    renderProperties();
     calculate();
+    savedNote.textContent = "—";
   });
 
-  calculate();
+  // Init
+  (function init(){
+    const st = loadState();
+    if(st){
+      applyState(st);
+      setSavedNote(true);
+    } else {
+      renderProperties();
+      setSavedNote(true); // show saved label after first calc/save
+    }
+    calculateAndPersist();
+  })();
 </script>
 </body>
 </html>
